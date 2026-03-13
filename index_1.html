@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en" id="root">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Math Air — Visual Mathematics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================  TOKENS  */
+:root {
+  --bg:#fafafa; --surface:#fff; --fg:#0a0a0a; --muted:#767676;
+  --subtle:#aaa; --line:#e8e8e8; --soft:#f4f4f4;
+  --radius:20px; --max:1200px;
+  --mono:'DM Mono','Courier New',monospace;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--fg);
+  -webkit-font-smoothing:antialiased;line-height:1.6}
+
+/* ============================================================  LAYOUT  */
+.wrap{max-width:var(--max);margin:0 auto;padding:0 40px}
+@media(max-width:768px){.wrap{padding:0 18px}}
+section{padding:96px 0}
+section+section{border-top:1px solid var(--line)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:900px){.two-col,.three-col{grid-template-columns:1fr}}
+
+/* ============================================================  NAV  */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(250,250,250,.9);
+  backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--line)}
+.topbar-inner{display:flex;justify-content:space-between;align-items:center;min-height:68px;gap:16px}
+.brand{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;text-decoration:none;color:var(--fg);white-space:nowrap}
+.nav{display:flex;gap:2px;flex:1;justify-content:center;flex-wrap:wrap}
+.nav a{font-size:13px;color:var(--muted);text-decoration:none;padding:7px 13px;
+  border-radius:999px;transition:background .15s,color .15s}
+.nav a:hover{background:var(--soft);color:var(--fg)}
+
+/* Language switcher */
+.lang-sw{display:flex;gap:2px;align-items:center;flex-shrink:0}
+.lang-btn{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.1em;
+  text-transform:uppercase;padding:6px 11px;border-radius:999px;border:1px solid var(--line);
+  background:none;cursor:pointer;color:var(--muted);transition:all .15s}
+.lang-btn.active{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+
+/* ============================================================  HERO  */
+.hero{padding:76px 0 56px;overflow:hidden}
+.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+@media(max-width:900px){.hero-inner{grid-template-columns:1fr}}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  padding:7px 14px;border:1px solid var(--line);border-radius:999px;margin-bottom:26px}
+.hero-title{font-family:var(--serif);font-size:clamp(42px,6vw,74px);line-height:1.05;
+  font-weight:400;margin-bottom:22px;letter-spacing:-.01em}
+.hero-title em{font-style:italic;color:var(--muted)}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.65;max-width:420px;margin-bottom:36px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;
+  font-weight:500;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  padding:12px 22px;border-radius:999px;transition:all .18s;cursor:pointer;border:none}
+.btn-primary{background:var(--fg);color:var(--bg)}
+.btn-primary:hover{background:#333}
+.btn-outline{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn-outline:hover{background:var(--soft);border-color:#ccc}
+.hero-visual{height:400px;position:relative}
+#heroCanvas{width:100%;height:100%}
+
+/* ============================================================  SECTIONS  */
+.section-label{font-family:var(--mono);font-size:11px;font-weight:400;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--subtle);margin-bottom:10px;
+  display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';display:block;height:1px;width:38px;background:var(--line)}
+.section-title{font-family:var(--serif);font-size:clamp(28px,4vw,46px);
+  line-height:1.1;font-weight:400;margin-bottom:14px}
+.section-desc{font-size:16px;color:var(--muted);max-width:560px;line-height:1.65;margin-bottom:56px}
+
+/* ============================================================  CARDS  */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:32px}
+.card-title{font-family:var(--serif);font-size:21px;font-weight:400;margin-bottom:6px}
+.card-desc{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+.formula{font-family:var(--mono);font-size:14px;background:var(--soft);
+  border-left:2px solid var(--fg);padding:13px 18px;border-radius:0 10px 10px 0;
+  margin:18px 0;color:var(--fg);line-height:1.9}
+
+/* ============================================================  INPUTS  */
+.input-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-bottom:18px}
+.input-group{display:flex;flex-direction:column;gap:5px}
+.input-group label{font-family:var(--mono);font-size:10px;font-weight:400;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.input-group input[type=number],.input-group select{
+  font-family:var(--mono);font-size:13px;background:var(--soft);
+  border:1px solid var(--line);border-radius:9px;padding:9px 12px;
+  color:var(--fg);outline:none;transition:border-color .15s;
+  -webkit-appearance:none;appearance:none}
+.input-group input[type=number]:focus,.input-group select:focus{border-color:var(--fg)}
+
+/* Slider under input */
+.input-group input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:2px;
+  background:var(--line);border-radius:2px;outline:none;margin-top:4px;cursor:pointer}
+.input-group input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:13px;height:13px;background:var(--fg);
+  border-radius:50%;cursor:pointer;transition:transform .12s}
+.input-group input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.3)}
+.input-group input[type=range]::-moz-range-thumb{width:13px;height:13px;background:var(--fg);
+  border:none;border-radius:50%;cursor:pointer}
+
+/* Standalone range row (VR) */
+.range-row{display:flex;align-items:center;gap:14px;margin:8px 0}
+.range-row label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-width:90px}
+.range-row input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:2px;background:var(--line);border-radius:2px;outline:none;cursor:pointer}
+.range-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--fg);border-radius:50%;cursor:pointer}
+.range-row .range-val{font-family:var(--mono);font-size:13px;min-width:44px;text-align:right;color:var(--fg)}
+
+/* ============================================================  RESULTS  */
+.result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:22px}
+.result-item{background:var(--soft);border-radius:11px;padding:14px 16px}
+.result-label{font-family:var(--mono);font-size:10px;font-weight:400;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--subtle);margin-bottom:5px}
+.result-value{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--fg)}
+.result-value.sig{font-weight:600}
+.verdict{margin-top:18px;padding:14px 18px;border-radius:11px;font-family:var(--mono);
+  font-size:13px;font-weight:500;border:1px solid}
+.verdict.yes{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.verdict.no{background:var(--soft);color:var(--muted);border-color:var(--line)}
+
+/* ============================================================  CHARTS  */
+.chart-wrap{position:relative;background:var(--surface);border:1px solid var(--line);
+  border-radius:13px;padding:18px;margin:18px 0}
+.chart-wrap canvas{display:block;width:100%!important}
+
+/* ============================================================  TABS  */
+.tabs{display:flex;gap:2px;margin-bottom:30px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab-btn{font-family:var(--mono);font-size:11px;font-weight:400;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;
+  padding:11px 16px;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;
+  margin-bottom:-1px}
+.tab-btn.active{color:var(--fg);border-bottom-color:var(--fg)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ============================================================  MISC  */
+.info-block{border-left:2px solid var(--line);padding:0 0 0 18px;margin:20px 0}
+.info-block p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:9px}
+.info-block p:last-child{margin-bottom:0}
+.info-block strong{color:var(--fg);font-weight:500}
+.divider{height:1px;background:var(--line);margin:36px 0}
+.arm-bar{margin:9px 0}
+.arm-bar-label{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between}
+.arm-bar-track{height:7px;background:var(--soft);border-radius:4px;overflow:hidden}
+.arm-bar-fill{height:100%;background:var(--fg);border-radius:4px;transition:width .3s}
+.scenario-btns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px}
+.scenario-btn{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--line);background:none;
+  cursor:pointer;color:var(--muted);transition:all .15s}
+.scenario-btn.active{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+#regressionCanvas{cursor:crosshair}
+
+footer{padding:56px 0;border-top:1px solid var(--line);text-align:center}
+footer p{font-family:var(--mono);font-size:12px;color:var(--subtle);letter-spacing:.1em}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.hero-inner>*{animation:fadeUp .55s ease both}
+.hero-inner>*:nth-child(2){animation-delay:.1s}
+
+/* Shared z-score highlight */
+.z-highlight{font-family:var(--mono);font-size:26px;font-weight:500;
+  text-align:center;padding:20px;background:var(--soft);border-radius:12px;margin:16px 0}
+.z-highlight span{font-size:13px;font-weight:400;color:var(--muted);display:block;margin-top:4px}
+</style>
+</head>
+<body>
+
+<!-- ======================================================  NAV  -->
+<header class="topbar">
+  <div class="wrap">
+    <div class="topbar-inner">
+      <a class="brand" href="#">Math Air</a>
+      <nav class="nav">
+        <a href="#stats" data-i18n="nav_stats">Statistics</a>
+        <a href="#zci"   data-i18n="nav_zci">Z / CI</a>
+        <a href="#advanced" data-i18n="nav_adv">Advanced</a>
+        <a href="#equations" data-i18n="nav_eq">Equations</a>
+        <a href="#regression" data-i18n="nav_reg">Regression</a>
+      </nav>
+      <div class="lang-sw">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('ru')">RU</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ======================================================  HERO  -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow"><span>⬡</span> <span data-i18n="hero_eyebrow">Visual Mathematics</span></div>
+        <h1 class="hero-title" data-i18n="hero_title_html">Mathematics<br/>made <em>visible</em></h1>
+        <p class="hero-sub" data-i18n="hero_sub">Interactive calculators, live distributions, regression labs and Bayesian posteriors — all in pure mathematical clarity.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#stats" data-i18n="hero_cta1">Explore Statistics</a>
+          <a class="btn btn-outline" href="#regression" data-i18n="hero_cta2">Regression Lab</a>
+        </div>
+      </div>
+      <div class="hero-visual"><canvas id="heroCanvas"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================  STATS  -->
+<section id="stats">
+  <div class="wrap">
+    <div class="section-label">§ 01</div>
+    <h2 class="section-title" data-i18n="s1_title">Inference &amp; Testing</h2>
+    <p class="section-desc" data-i18n="s1_desc">Central Limit Theorem, hypothesis testing, p-values, confidence intervals and Bayesian posteriors — the backbone of statistical reasoning.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('s','abt',this)" data-i18n="tab_ab">A/B Test</button>
+      <button class="tab-btn" onclick="switchTab('s','bayes',this)" data-i18n="tab_bayes">Bayesian</button>
+      <button class="tab-btn" onclick="switchTab('s','clt',this)" data-i18n="tab_clt">CLT</button>
+    </div>
+
+    <!-- ── A/B TEST ── -->
+    <div id="s-abt" class="tab-panel active">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" data-i18n="ab_title">A/B Calculator</div>
+          <div class="card-desc" data-i18n="ab_desc">Z-test or Welch's t-test for comparing two group means.</div>
+          <div class="formula">z = (x̄<sub>B</sub> − x̄<sub>A</sub>) / √(σ²<sub>A</sub>/n<sub>A</sub> + σ²<sub>B</sub>/n<sub>B</sub>)</div>
+
+          <div class="input-grid">
+            <div class="input-group">
+              <label data-i18n="ab_type">Test type</label>
+              <select id="ab-type" onchange="calcAB()">
+                <option value="z">Z-test</option>
+                <option value="t">Welch t-test</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label data-i18n="ab_alpha">Alpha α</label>
+              <input type="number" id="ab-alpha" value="0.05" step="0.01" min="0.001" max="0.2" oninput="syncNR('ab-alpha');calcAB()"/>
+              <input type="range" id="ab-alpha-r" min="0.01" max="0.2" step="0.01" value="0.05" oninput="syncRN('ab-alpha');calcAB()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_mean_a">Mean A</label>
+              <input type="number" id="ab-ma" value="0.12" step="0.01" oninput="syncNR('ab-ma');calcAB()"/>
+              <input type="range" id="ab-ma-r" min="-2" max="2" step="0.01" value="0.12" oninput="syncRN('ab-ma');calcAB()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_mean_b">Mean B</label>
+              <input type="number" id="ab-mb" value="0.14" step="0.01" oninput="syncNR('ab-mb');calcAB()"/>
+              <input type="range" id="ab-mb-r" min="-2" max="2" step="0.01" value="0.14" oninput="syncRN('ab-mb');calcAB()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_std_a">Std A (σ)</label>
+              <input type="number" id="ab-sa" value="0.33" step="0.01" min="0.001" oninput="syncNR('ab-sa');calcAB()"/>
+              <input type="range" id="ab-sa-r" min="0.01" max="3" step="0.01" value="0.33" oninput="syncRN('ab-sa');calcAB()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_std_b">Std B (σ)</label>
+              <input type="number" id="ab-sb" value="0.35" step="0.01" min="0.001" oninput="syncNR('ab-sb');calcAB()"/>
+              <input type="range" id="ab-sb-r" min="0.01" max="3" step="0.01" value="0.35" oninput="syncRN('ab-sb');calcAB()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_n_a">n A</label>
+              <input type="number" id="ab-na" value="1000" step="50" min="2" oninput="syncNR('ab-na');calcAB()"/>
+              <input type="range" id="ab-na-r" min="10" max="10000" step="50" value="1000" oninput="syncRN('ab-na');calcAB()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_n_b">n B</label>
+              <input type="number" id="ab-nb" value="1000" step="50" min="2" oninput="syncNR('ab-nb');calcAB()"/>
+              <input type="range" id="ab-nb-r" min="10" max="10000" step="50" value="1000" oninput="syncRN('ab-nb');calcAB()"/>
+            </div>
+          </div>
+
+          <div id="ab-results"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" data-i18n="ab_chart_title">Distribution Preview</div>
+          <div class="card-desc" data-i18n="ab_chart_desc">Sampling distributions of both groups.</div>
+          <div class="chart-wrap" style="padding:14px"><canvas id="abChart" height="240"></canvas></div>
+          <div class="info-block">
+            <p><strong data-i18n="ab_info1_h">Under H₀</strong>: <span data-i18n="ab_info1_b">the two distributions are identical. The test statistic measures how many standard errors apart the observed means are.</span></p>
+            <p><strong>p-value</strong>: <span data-i18n="ab_info2_b">probability of observing a test statistic this extreme, assuming the null is true. If p &lt; α, we reject H₀.</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BAYESIAN ── -->
+    <div id="s-bayes" class="tab-panel">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" data-i18n="bayes_title">Beta-Binomial Posterior</div>
+          <div class="card-desc" data-i18n="bayes_desc">Bayesian inference for conversion rates using a Beta prior.</div>
+          <div class="formula">p | data ~ Beta(α₀ + k,  β₀ + n − k)</div>
+          <div class="input-grid">
+            <div class="input-group">
+              <label data-i18n="lbl_conv_a">Conv A</label>
+              <input type="number" id="by-ca" value="120" oninput="syncNR('by-ca');calcBayes()"/>
+              <input type="range" id="by-ca-r" min="1" max="2000" step="1" value="120" oninput="syncRN('by-ca');calcBayes()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_trials_a">Trials A</label>
+              <input type="number" id="by-ta" value="1000" oninput="syncNR('by-ta');calcBayes()"/>
+              <input type="range" id="by-ta-r" min="10" max="10000" step="10" value="1000" oninput="syncRN('by-ta');calcBayes()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_conv_b">Conv B</label>
+              <input type="number" id="by-cb" value="140" oninput="syncNR('by-cb');calcBayes()"/>
+              <input type="range" id="by-cb-r" min="1" max="2000" step="1" value="140" oninput="syncRN('by-cb');calcBayes()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_trials_b">Trials B</label>
+              <input type="number" id="by-tb" value="1000" oninput="syncNR('by-tb');calcBayes()"/>
+              <input type="range" id="by-tb-r" min="10" max="10000" step="10" value="1000" oninput="syncRN('by-tb');calcBayes()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_prior_a">Prior α</label>
+              <input type="number" id="by-pa" value="1" step="0.5" min="0.1" oninput="syncNR('by-pa');calcBayes()"/>
+              <input type="range" id="by-pa-r" min="0.1" max="20" step="0.1" value="1" oninput="syncRN('by-pa');calcBayes()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_prior_b">Prior β</label>
+              <input type="number" id="by-pb" value="1" step="0.5" min="0.1" oninput="syncNR('by-pb');calcBayes()"/>
+              <input type="range" id="by-pb-r" min="0.1" max="20" step="0.1" value="1" oninput="syncRN('by-pb');calcBayes()"/>
+            </div>
+          </div>
+          <div id="bayes-results"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" data-i18n="bayes_chart_title">Posterior Curves</div>
+          <div class="card-desc" data-i18n="bayes_chart_desc">Beta distributions after observing data.</div>
+          <div class="chart-wrap" style="padding:14px"><canvas id="bayesChart" height="260"></canvas></div>
+          <div class="info-block">
+            <p><strong data-i18n="bayes_info1_h">Posterior mean</strong>: <span data-i18n="bayes_info1_b">(α₀ + k)/(α₀ + β₀ + n) — the best estimate of the true conversion rate.</span></p>
+            <p><strong>P(B&gt;A)</strong>: <span data-i18n="bayes_info2_b">estimated via Monte Carlo sampling from both posteriors.</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CLT ── -->
+    <div id="s-clt" class="tab-panel">
+      <div class="card">
+        <div class="card-title" data-i18n="clt_title">Central Limit Theorem — Live Simulation</div>
+        <div class="card-desc" data-i18n="clt_desc">Sample means from any distribution converge to a Normal as n grows. Watch the sampling distribution emerge in real time.</div>
+        <div class="formula">X̄ ~ N(μ, σ²/n)&nbsp;&nbsp;&nbsp;as n → ∞</div>
+        <div class="input-grid">
+          <div class="input-group">
+            <label data-i18n="lbl_population">Population</label>
+            <select id="clt-dist" onchange="runCLT()">
+              <option value="uniform" data-i18n="opt_uniform">Uniform [0,1]</option>
+              <option value="exp" data-i18n="opt_exp">Exponential(1)</option>
+              <option value="bimodal" data-i18n="opt_bimodal">Bimodal</option>
+              <option value="skew" data-i18n="opt_skew">Right-Skewed</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label data-i18n="lbl_sample_n">Sample size n</label>
+            <input type="number" id="clt-n" value="30" min="1" max="500" oninput="syncNR('clt-n');runCLT()"/>
+            <input type="range" id="clt-n-r" min="1" max="200" step="1" value="30" oninput="syncRN('clt-n');runCLT()"/>
+          </div>
+          <div class="input-group">
+            <label data-i18n="lbl_sims">Simulations</label>
+            <input type="number" id="clt-sims" value="2000" min="100" max="10000" oninput="syncNR('clt-sims');runCLT()"/>
+            <input type="range" id="clt-sims-r" min="100" max="5000" step="100" value="2000" oninput="syncRN('clt-sims');runCLT()"/>
+          </div>
+        </div>
+        <div class="two-col" style="margin-top:20px">
+          <div>
+            <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle);margin-bottom:8px" data-i18n="clt_pop_label">Population distribution</div>
+            <div class="chart-wrap" style="padding:12px"><canvas id="cltPopChart" height="170"></canvas></div>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle);margin-bottom:8px" data-i18n="clt_samp_label">Sampling distribution of X̄</div>
+            <div class="chart-wrap" style="padding:12px"><canvas id="cltSampChart" height="170"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================  Z / CI  -->
+<section id="zci">
+  <div class="wrap">
+    <div class="section-label">§ 02</div>
+    <h2 class="section-title" data-i18n="s2_title">Z-Scores, CI &amp; Effect Size</h2>
+    <p class="section-desc" data-i18n="s2_desc">Standardisation, confidence intervals, and effect size measures — the tools that connect raw data to actionable interpretation.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('z','zscore',this)" data-i18n="tab_zscore">Z-Score</button>
+      <button class="tab-btn" onclick="switchTab('z','ci',this)" data-i18n="tab_ci">Confidence Interval</button>
+      <button class="tab-btn" onclick="switchTab('z','effect',this)" data-i18n="tab_effect">Effect Size</button>
+      <button class="tab-btn" onclick="switchTab('z','tdist',this)" data-i18n="tab_tdist">t vs Z</button>
+    </div>
+
+    <!-- ── Z-SCORE ── -->
+    <div id="z-zscore" class="tab-panel active">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" data-i18n="zs_title">Z-Score Transformer</div>
+          <div class="card-desc" data-i18n="zs_desc">Standardise any observation to see where it falls in the standard normal distribution.</div>
+          <div class="formula">Z = (X − μ) / σ</div>
+          <div class="input-grid">
+            <div class="input-group">
+              <label>X</label>
+              <input type="number" id="zs-x" value="72" step="1" oninput="syncNR('zs-x');calcZScore()"/>
+              <input type="range" id="zs-x-r" min="-50" max="150" step="1" value="72" oninput="syncRN('zs-x');calcZScore()"/>
+            </div>
+            <div class="input-group">
+              <label>μ (mean)</label>
+              <input type="number" id="zs-mu" value="65" step="1" oninput="syncNR('zs-mu');calcZScore()"/>
+              <input type="range" id="zs-mu-r" min="-50" max="150" step="1" value="65" oninput="syncRN('zs-mu');calcZScore()"/>
+            </div>
+            <div class="input-group">
+              <label>σ (std dev)</label>
+              <input type="number" id="zs-sigma" value="10" step="0.5" min="0.1" oninput="syncNR('zs-sigma');calcZScore()"/>
+              <input type="range" id="zs-sigma-r" min="0.5" max="50" step="0.5" value="10" oninput="syncRN('zs-sigma');calcZScore()"/>
+            </div>
+          </div>
+          <div id="zs-results"></div>
+          <div class="info-block">
+            <p><strong data-i18n="zs_info1_h">Standardisation</strong>: <span data-i18n="zs_info1_b">Z tells you how many standard deviations X is above or below the mean. Z=0 is the mean; Z=±1 covers ~68% of data; Z=±2 covers ~95%.</span></p>
+            <p><strong data-i18n="zs_info2_h">Percentile</strong>: <span data-i18n="zs_info2_b">Φ(Z) — the proportion of values below X. If Z=1.64 then ~95% of values lie below this point.</span></p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" data-i18n="zs_chart_title">Standard Normal</div>
+          <div class="card-desc" data-i18n="zs_chart_desc">Shaded area = percentile at the current Z-score.</div>
+          <div class="chart-wrap" style="padding:14px"><canvas id="zscoreChart" height="280"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CONFIDENCE INTERVAL ── -->
+    <div id="z-ci" class="tab-panel">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" data-i18n="ci_title">CI Calculator</div>
+          <div class="card-desc" data-i18n="ci_desc">Confidence interval for a population mean. Choose known σ (Z-interval) or estimated s (t-interval).</div>
+          <div class="formula">CI = x̄ ± z*·(σ/√n) &nbsp;or&nbsp; x̄ ± t*·(s/√n)</div>
+          <div class="input-grid">
+            <div class="input-group">
+              <label data-i18n="ci_mode">Mode</label>
+              <select id="ci-mode" onchange="calcCI()">
+                <option value="z" data-i18n="ci_mode_z">Z (known σ)</option>
+                <option value="t" data-i18n="ci_mode_t">t (estimated s)</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>x̄ <span data-i18n="lbl_sample_mean">(sample mean)</span></label>
+              <input type="number" id="ci-xbar" value="52.3" step="0.1" oninput="syncNR('ci-xbar');calcCI()"/>
+              <input type="range" id="ci-xbar-r" min="-100" max="200" step="0.1" value="52.3" oninput="syncRN('ci-xbar');calcCI()"/>
+            </div>
+            <div class="input-group">
+              <label>σ / s</label>
+              <input type="number" id="ci-s" value="8.4" step="0.1" min="0.01" oninput="syncNR('ci-s');calcCI()"/>
+              <input type="range" id="ci-s-r" min="0.1" max="100" step="0.1" value="8.4" oninput="syncRN('ci-s');calcCI()"/>
+            </div>
+            <div class="input-group">
+              <label>n</label>
+              <input type="number" id="ci-n" value="40" min="2" oninput="syncNR('ci-n');calcCI()"/>
+              <input type="range" id="ci-n-r" min="2" max="2000" step="1" value="40" oninput="syncRN('ci-n');calcCI()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_conf">Confidence %</label>
+              <input type="number" id="ci-conf" value="95" min="50" max="99.9" step="0.5" oninput="syncNR('ci-conf');calcCI()"/>
+              <input type="range" id="ci-conf-r" min="50" max="99" step="0.5" value="95" oninput="syncRN('ci-conf');calcCI()"/>
+            </div>
+          </div>
+          <div id="ci-results"></div>
+          <div class="info-block">
+            <p><strong data-i18n="ci_info1_h">Interpretation</strong>: <span data-i18n="ci_info1_b">A 95% CI means: if we repeated the experiment many times, ~95% of the computed intervals would contain the true parameter.</span></p>
+            <p><strong data-i18n="ci_info2_h">Margin of Error</strong>: <span data-i18n="ci_info2_b">Half-width of the CI. Decreases as n grows (∝ 1/√n) or as confidence level drops.</span></p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" data-i18n="ci_chart_title">Interval Visualisation</div>
+          <div class="card-desc" data-i18n="ci_chart_desc">The interval and how it changes with n.</div>
+          <div class="chart-wrap" style="padding:14px"><canvas id="ciChart" height="260"></canvas></div>
+          <div class="chart-wrap" style="padding:14px"><canvas id="ciWidthChart" height="160"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EFFECT SIZE ── -->
+    <div id="z-effect" class="tab-panel">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" data-i18n="es_title">Effect Size — Cohen's d &amp; h</div>
+          <div class="card-desc" data-i18n="es_desc">Practical significance: how big is the difference in standardised units? Complements the p-value.</div>
+          <div class="formula">
+            d = (μ₂ − μ₁) / σ_pooled<br/>
+            h = 2·arcsin(√p₂) − 2·arcsin(√p₁)
+          </div>
+          <div class="input-grid">
+            <div class="input-group">
+              <label>μ₁</label>
+              <input type="number" id="es-m1" value="10" step="0.1" oninput="syncNR('es-m1');calcEffect()"/>
+              <input type="range" id="es-m1-r" min="-50" max="100" step="0.1" value="10" oninput="syncRN('es-m1');calcEffect()"/>
+            </div>
+            <div class="input-group">
+              <label>μ₂</label>
+              <input type="number" id="es-m2" value="12" step="0.1" oninput="syncNR('es-m2');calcEffect()"/>
+              <input type="range" id="es-m2-r" min="-50" max="100" step="0.1" value="12" oninput="syncRN('es-m2');calcEffect()"/>
+            </div>
+            <div class="input-group">
+              <label>σ₁</label>
+              <input type="number" id="es-s1" value="4" step="0.1" min="0.01" oninput="syncNR('es-s1');calcEffect()"/>
+              <input type="range" id="es-s1-r" min="0.1" max="30" step="0.1" value="4" oninput="syncRN('es-s1');calcEffect()"/>
+            </div>
+            <div class="input-group">
+              <label>σ₂</label>
+              <input type="number" id="es-s2" value="4" step="0.1" min="0.01" oninput="syncNR('es-s2');calcEffect()"/>
+              <input type="range" id="es-s2-r" min="0.1" max="30" step="0.1" value="4" oninput="syncRN('es-s2');calcEffect()"/>
+            </div>
+            <div class="input-group">
+              <label>n₁</label>
+              <input type="number" id="es-n1" value="50" min="2" oninput="syncNR('es-n1');calcEffect()"/>
+              <input type="range" id="es-n1-r" min="2" max="1000" step="1" value="50" oninput="syncRN('es-n1');calcEffect()"/>
+            </div>
+            <div class="input-group">
+              <label>n₂</label>
+              <input type="number" id="es-n2" value="50" min="2" oninput="syncNR('es-n2');calcEffect()"/>
+              <input type="range" id="es-n2-r" min="2" max="1000" step="1" value="50" oninput="syncRN('es-n2');calcEffect()"/>
+            </div>
+            <div class="input-group">
+              <label>p₁ <span data-i18n="lbl_prop">(proportion)</span></label>
+              <input type="number" id="es-p1" value="0.10" step="0.01" min="0.001" max="0.999" oninput="syncNR('es-p1');calcEffect()"/>
+              <input type="range" id="es-p1-r" min="0.001" max="0.999" step="0.001" value="0.10" oninput="syncRN('es-p1');calcEffect()"/>
+            </div>
+            <div class="input-group">
+              <label>p₂ <span data-i18n="lbl_prop">(proportion)</span></label>
+              <input type="number" id="es-p2" value="0.13" step="0.01" min="0.001" max="0.999" oninput="syncNR('es-p2');calcEffect()"/>
+              <input type="range" id="es-p2-r" min="0.001" max="0.999" step="0.001" value="0.13" oninput="syncRN('es-p2');calcEffect()"/>
+            </div>
+          </div>
+          <div id="es-results"></div>
+          <div class="info-block">
+            <p><strong data-i18n="es_info1_h">Convention (Cohen, 1988)</strong>: <span data-i18n="es_info1_b">d &lt; 0.2 = negligible · 0.2–0.5 = small · 0.5–0.8 = medium · &gt;0.8 = large.</span></p>
+            <p><strong data-i18n="es_info2_h">Why it matters</strong>: <span data-i18n="es_info2_b">Statistical significance (p-value) depends on sample size. Effect size is independent of n — it measures the magnitude of the difference itself.</span></p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" data-i18n="es_chart_title">Distribution Overlap</div>
+          <div class="card-desc" data-i18n="es_chart_desc">Visualise how Cohen's d maps to distributional overlap.</div>
+          <div class="chart-wrap" style="padding:14px"><canvas id="effectChart" height="280"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── T vs Z ── -->
+    <div id="z-tdist" class="tab-panel">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" data-i18n="tz_title">t-distribution vs Normal</div>
+          <div class="card-desc" data-i18n="tz_desc">The t-distribution has heavier tails when df is small. It converges to N(0,1) as df → ∞.</div>
+          <div class="formula">
+            f(t, ν) ∝ (1 + t²/ν)^(−(ν+1)/2)<br/>
+            t → N(0,1) as ν → ∞
+          </div>
+          <div class="input-grid">
+            <div class="input-group">
+              <label data-i18n="lbl_df">Degrees of freedom ν</label>
+              <input type="number" id="td-df" value="5" min="1" max="500" step="1" oninput="syncNR('td-df');drawTDist()"/>
+              <input type="range" id="td-df-r" min="1" max="100" step="1" value="5" oninput="syncRN('td-df');drawTDist()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_alpha">Alpha α (two-sided)</label>
+              <input type="number" id="td-alpha" value="0.05" step="0.01" min="0.001" max="0.5" oninput="syncNR('td-alpha');drawTDist()"/>
+              <input type="range" id="td-alpha-r" min="0.01" max="0.4" step="0.01" value="0.05" oninput="syncRN('td-alpha');drawTDist()"/>
+            </div>
+          </div>
+          <div id="td-results"></div>
+          <div class="info-block">
+            <p><strong data-i18n="tz_info1_h">When to use t</strong>: <span data-i18n="tz_info1_b">When σ is unknown and estimated from sample (practically always). For n &gt; 30, the difference from Z is negligible.</span></p>
+            <p><strong data-i18n="tz_info2_h">Critical value</strong>: <span data-i18n="tz_info2_b">The value t* such that P(|T| &gt; t*) = α. Larger than z* because of heavier tails, especially at low df.</span></p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" data-i18n="tz_chart_title">Tail Comparison</div>
+          <div class="card-desc" data-i18n="tz_chart_desc">t(ν) vs N(0,1) — red shading = rejection region.</div>
+          <div class="chart-wrap" style="padding:14px"><canvas id="tdistChart" height="300"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================  ADVANCED  -->
+<section id="advanced">
+  <div class="wrap">
+    <div class="section-label">§ 03</div>
+    <h2 class="section-title" data-i18n="s3_title">Advanced Methods</h2>
+    <p class="section-desc" data-i18n="s3_desc">Variance reduction, minimal detectable effect, and multi-armed bandit simulation — tools for designing rigorous experiments.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('a','vr',this)" data-i18n="tab_vr">Variance Reduction</button>
+      <button class="tab-btn" onclick="switchTab('a','mde',this)" data-i18n="tab_mde">MDE</button>
+      <button class="tab-btn" onclick="switchTab('a','mab',this)" data-i18n="tab_mab">Bandits</button>
+    </div>
+
+    <!-- ── VARIANCE REDUCTION ── -->
+    <div id="a-vr" class="tab-panel active">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" data-i18n="vr_title">CUPED / Covariance Adjustment</div>
+          <div class="card-desc" data-i18n="vr_desc">CUPED removes variance explained by a pre-experiment covariate, increasing statistical power without more data.</div>
+          <div class="formula">Var(Y<sub>adj</sub>) = Var(Y) · (1 − ρ²)<br/>Reduction = ρ² × 100%</div>
+          <div class="input-grid">
+            <div class="input-group">
+              <label data-i18n="lbl_base_var">Base variance σ²</label>
+              <input type="number" id="vr-sigma" value="1.0" step="0.1" min="0.01" oninput="syncNR('vr-sigma');updateVR()"/>
+              <input type="range" id="vr-sigma-r" min="0.01" max="10" step="0.01" value="1.0" oninput="syncRN('vr-sigma');updateVR()"/>
+            </div>
+          </div>
+          <div class="range-row">
+            <label data-i18n="lbl_corr">Correlation ρ</label>
+            <input type="range" id="vr-rho" min="-0.99" max="0.99" step="0.01" value="0.5" oninput="updateVR()"/>
+            <span class="range-val" id="vr-rho-val">0.50</span>
+          </div>
+          <div id="vr-results" style="margin-top:18px"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" data-i18n="vr_chart_title">Variance Decomposition</div>
+          <div class="card-desc" data-i18n="vr_chart_desc">Adjusted variance as a function of ρ.</div>
+          <div class="chart-wrap" style="padding:14px"><canvas id="vrChart" height="240"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MDE ── -->
+    <div id="a-mde" class="tab-panel">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" data-i18n="mde_title">MDE Calculator</div>
+          <div class="card-desc" data-i18n="mde_desc">MDE is the smallest effect your experiment can reliably detect given sample size, baseline, α and power.</div>
+          <div class="formula">MDE = (z<sub>α/2</sub> + z<sub>β</sub>) · √(2·p₀(1−p₀)/n)</div>
+          <div class="input-grid">
+            <div class="input-group">
+              <label data-i18n="lbl_baseline">Baseline p₀</label>
+              <input type="number" id="mde-p" value="0.1" step="0.01" min="0.001" max="0.999" oninput="syncNR('mde-p');calcMDE()"/>
+              <input type="range" id="mde-p-r" min="0.01" max="0.99" step="0.01" value="0.1" oninput="syncRN('mde-p');calcMDE()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_total_users">Total users</label>
+              <input type="number" id="mde-n" value="10000" min="10" oninput="syncNR('mde-n');calcMDE()"/>
+              <input type="range" id="mde-n-r" min="100" max="200000" step="100" value="10000" oninput="syncRN('mde-n');calcMDE()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_alpha">Alpha α</label>
+              <input type="number" id="mde-a" value="0.05" step="0.01" min="0.001" oninput="syncNR('mde-a');calcMDE()"/>
+              <input type="range" id="mde-a-r" min="0.01" max="0.2" step="0.01" value="0.05" oninput="syncRN('mde-a');calcMDE()"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_power">Power 1−β</label>
+              <input type="number" id="mde-pw" value="0.8" step="0.05" min="0.5" max="0.99" oninput="syncNR('mde-pw');calcMDE()"/>
+              <input type="range" id="mde-pw-r" min="0.5" max="0.99" step="0.01" value="0.8" oninput="syncRN('mde-pw');calcMDE()"/>
+            </div>
+          </div>
+          <div id="mde-results"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" data-i18n="mde_chart_title">MDE vs Sample Size</div>
+          <div class="card-desc" data-i18n="mde_chart_desc">How MDE shrinks as you collect more data.</div>
+          <div class="chart-wrap" style="padding:14px"><canvas id="mdeChart" height="240"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BANDITS ── -->
+    <div id="a-mab" class="tab-panel">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" data-i18n="mab_title">Thompson Sampling — 3 Arms</div>
+          <div class="card-desc" data-i18n="mab_desc">Each round: sample θ from each arm's Beta posterior, pick the highest, observe reward, update.</div>
+          <div class="formula">θ<sub>i</sub> ~ Beta(α<sub>i</sub>+s<sub>i</sub>, β<sub>i</sub>+f<sub>i</sub>)&nbsp;&nbsp;pick argmax</div>
+          <div class="input-grid">
+            <div class="input-group"><label data-i18n="lbl_true_pa">True p(A)</label><input type="number" id="mab-pa" value="0.30" step="0.01" oninput="syncNR('mab-pa')"/><input type="range" id="mab-pa-r" min="0.01" max="0.99" step="0.01" value="0.30" oninput="syncRN('mab-pa')"/></div>
+            <div class="input-group"><label data-i18n="lbl_true_pb">True p(B)</label><input type="number" id="mab-pb" value="0.35" step="0.01" oninput="syncNR('mab-pb')"/><input type="range" id="mab-pb-r" min="0.01" max="0.99" step="0.01" value="0.35" oninput="syncRN('mab-pb')"/></div>
+            <div class="input-group"><label data-i18n="lbl_true_pc">True p(C)</label><input type="number" id="mab-pc" value="0.25" step="0.01" oninput="syncNR('mab-pc')"/><input type="range" id="mab-pc-r" min="0.01" max="0.99" step="0.01" value="0.25" oninput="syncRN('mab-pc')"/></div>
+            <div class="input-group"><label data-i18n="lbl_rounds">Rounds</label><input type="number" id="mab-rounds" value="1000" min="100" oninput="syncNR('mab-rounds')"/><input type="range" id="mab-rounds-r" min="100" max="5000" step="100" value="1000" oninput="syncRN('mab-rounds')"/></div>
+          </div>
+          <button class="btn btn-primary" onclick="runMAB()" data-i18n="btn_run">Run Simulation</button>
+          <div id="mab-results"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" data-i18n="mab_chart_title">Cumulative Regret</div>
+          <div class="card-desc" data-i18n="mab_chart_desc">Thompson Sampling converges: regret grows sub-linearly.</div>
+          <div class="chart-wrap" style="padding:14px"><canvas id="mabChart" height="240"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================  EQUATIONS  -->
+<section id="equations">
+  <div class="wrap">
+    <div class="section-label">§ 04</div>
+    <h2 class="section-title" data-i18n="s4_title">Equations</h2>
+    <p class="section-desc" data-i18n="s4_desc">Linear and nonlinear equations with geometric intuition. Roots, slopes, discriminants — visualised on a Cartesian plane.</p>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title" data-i18n="lin_title">Linear Equation</div>
+        <div class="card-desc" data-i18n="lin_desc">Solve ax + b = 0. Root, slope, y-intercept.</div>
+        <div class="formula">ax + b = 0 &nbsp;→&nbsp; x = −b/a</div>
+        <div class="input-grid" style="grid-template-columns:1fr 1fr">
+          <div class="input-group">
+            <label data-i18n="lbl_slope">a (slope)</label>
+            <input type="number" id="lin-a" value="2" step="0.1" oninput="syncNR('lin-a');calcLinear()"/>
+            <input type="range" id="lin-a-r" min="-10" max="10" step="0.1" value="2" oninput="syncRN('lin-a');calcLinear()"/>
+          </div>
+          <div class="input-group">
+            <label data-i18n="lbl_intercept">b (intercept)</label>
+            <input type="number" id="lin-b" value="-4" step="0.1" oninput="syncNR('lin-b');calcLinear()"/>
+            <input type="range" id="lin-b-r" min="-20" max="20" step="0.1" value="-4" oninput="syncRN('lin-b');calcLinear()"/>
+          </div>
+        </div>
+        <div id="lin-results"></div>
+        <div class="chart-wrap" style="padding:12px;margin-top:14px"><canvas id="linChart" height="210"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title" data-i18n="quad_title">Quadratic Equation</div>
+        <div class="card-desc" data-i18n="quad_desc">Solve ax² + bx + c = 0. Roots, vertex, discriminant.</div>
+        <div class="formula">Δ = b² − 4ac &nbsp;→&nbsp; x = (−b ± √Δ) / 2a</div>
+        <div class="input-grid" style="grid-template-columns:1fr 1fr 1fr">
+          <div class="input-group">
+            <label>a</label>
+            <input type="number" id="quad-a" value="1" step="0.1" oninput="syncNR('quad-a');calcQuad()"/>
+            <input type="range" id="quad-a-r" min="-5" max="5" step="0.1" value="1" oninput="syncRN('quad-a');calcQuad()"/>
+          </div>
+          <div class="input-group">
+            <label>b</label>
+            <input type="number" id="quad-b" value="-3" step="0.1" oninput="syncNR('quad-b');calcQuad()"/>
+            <input type="range" id="quad-b-r" min="-10" max="10" step="0.1" value="-3" oninput="syncRN('quad-b');calcQuad()"/>
+          </div>
+          <div class="input-group">
+            <label>c</label>
+            <input type="number" id="quad-c" value="2" step="0.1" oninput="syncNR('quad-c');calcQuad()"/>
+            <input type="range" id="quad-c-r" min="-10" max="10" step="0.1" value="2" oninput="syncRN('quad-c');calcQuad()"/>
+          </div>
+        </div>
+        <div id="quad-results"></div>
+        <div class="chart-wrap" style="padding:12px;margin-top:14px"><canvas id="quadChart" height="210"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================  REGRESSION  -->
+<section id="regression">
+  <div class="wrap">
+    <div class="section-label">§ 05</div>
+    <h2 class="section-title" data-i18n="s5_title">Regression Lab</h2>
+    <p class="section-desc" data-i18n="s5_desc">Generate synthetic data, fit models, inspect residuals. Click the canvas to add custom points.</p>
+    <div class="two-col" style="align-items:start">
+      <div>
+        <div class="card" style="margin-bottom:22px">
+          <div class="card-title" data-i18n="reg_gen_title">Data Generator</div>
+          <div class="card-desc" data-i18n="reg_gen_desc">Choose a scenario and generate data.</div>
+          <div class="scenario-btns">
+            <button class="scenario-btn active" onclick="setScenario('linear',this)" data-i18n="sc_linear">Linear</button>
+            <button class="scenario-btn" onclick="setScenario('quadratic',this)" data-i18n="sc_quad">Quadratic</button>
+            <button class="scenario-btn" onclick="setScenario('sinusoidal',this)" data-i18n="sc_sin">Sinusoidal</button>
+          </div>
+          <div class="input-grid">
+            <div class="input-group">
+              <label data-i18n="lbl_points_n">Points n</label>
+              <input type="number" id="reg-n" value="60" min="10" max="300" oninput="syncNR('reg-n')"/>
+              <input type="range" id="reg-n-r" min="10" max="300" step="5" value="60" oninput="syncRN('reg-n')"/>
+            </div>
+            <div class="input-group">
+              <label data-i18n="lbl_noise">Noise σ</label>
+              <input type="number" id="reg-noise" value="0.4" step="0.1" min="0" oninput="syncNR('reg-noise')"/>
+              <input type="range" id="reg-noise-r" min="0" max="5" step="0.05" value="0.4" oninput="syncRN('reg-noise')"/>
+            </div>
+            <div class="input-group">
+              <label>β₀</label>
+              <input type="number" id="reg-b0" value="1.0" step="0.1" oninput="syncNR('reg-b0')"/>
+              <input type="range" id="reg-b0-r" min="-10" max="10" step="0.1" value="1.0" oninput="syncRN('reg-b0')"/>
+            </div>
+            <div class="input-group">
+              <label>β₁</label>
+              <input type="number" id="reg-b1" value="2.0" step="0.1" oninput="syncNR('reg-b1')"/>
+              <input type="range" id="reg-b1-r" min="-10" max="10" step="0.1" value="2.0" oninput="syncRN('reg-b1')"/>
+            </div>
+            <div class="input-group">
+              <label>β₂</label>
+              <input type="number" id="reg-b2" value="0.5" step="0.1" oninput="syncNR('reg-b2')"/>
+              <input type="range" id="reg-b2-r" min="-5" max="5" step="0.1" value="0.5" oninput="syncRN('reg-b2')"/>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="generateData()" data-i18n="btn_generate">Generate Data</button>
+            <button class="btn btn-outline" onclick="clearData()" data-i18n="btn_clear">Clear</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" data-i18n="reg_metrics_title">Model Metrics</div>
+          <div class="card-desc" data-i18n="reg_metrics_desc">Fit statistics for linear and polynomial models.</div>
+          <div id="reg-metrics"><p style="color:var(--subtle);font-family:var(--mono);font-size:13px" data-i18n="reg_empty">Generate data to see metrics.</p></div>
+          <div class="info-block" style="margin-top:22px">
+            <p><strong>R²</strong>: <span data-i18n="reg_info_r2">proportion of variance in Y explained by the model. R²=1 is perfect fit; R²=0 means the model explains nothing.</span></p>
+            <p><strong>RMSE</strong>: <span data-i18n="reg_info_rmse">root mean squared error — on the same scale as Y, interpretable as the typical prediction error.</span></p>
+            <p><strong>MAE</strong>: <span data-i18n="reg_info_mae">mean absolute error — robust to outliers unlike RMSE.</span></p>
+            <p><strong data-i18n="reg_info_resvar_h">Residual variance</strong>: <span data-i18n="reg_info_resvar_b">variance remaining after the model accounts for the trend. Low residual variance = model captures most of the signal.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="height:fit-content">
+        <div class="card-title" data-i18n="reg_plot_title">Regression Plot</div>
+        <div class="card-desc">
+          <span data-i18n="reg_plot_desc">● data&nbsp; — linear fit&nbsp; -- quadratic fit</span>
+        </div>
+        <div class="chart-wrap" style="padding:10px"><canvas id="regressionCanvas" height="420"></canvas></div>
+        <p style="font-family:var(--mono);font-size:11px;color:var(--subtle);margin-top:8px;letter-spacing:.07em" data-i18n="reg_hint">Click on the plot to add custom data points.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Math Air — HTML + vanilla JS · <span data-i18n="footer_text">no dependencies · deploy-ready</span></p>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+'use strict';
+// ============================================================
+//  i18n
+// ============================================================
+const LANG = {
+  en: {
+    nav_stats:'Statistics', nav_zci:'Z / CI', nav_adv:'Advanced',
+    nav_eq:'Equations', nav_reg:'Regression',
+    hero_eyebrow:'Visual Mathematics',
+    hero_title_html:'Mathematics<br/>made <em>visible</em>',
+    hero_sub:'Interactive calculators, live distributions, regression labs and Bayesian posteriors — all in pure mathematical clarity.',
+    hero_cta1:'Explore Statistics', hero_cta2:'Regression Lab',
+    s1_title:'Inference &amp; Testing',
+    s1_desc:'Central Limit Theorem, hypothesis testing, p-values, confidence intervals and Bayesian posteriors — the backbone of statistical reasoning.',
+    tab_ab:'A/B Test', tab_bayes:'Bayesian', tab_clt:'CLT',
+    ab_title:'A/B Calculator',
+    ab_desc:'Z-test or Welch\'s t-test for comparing two group means.',
+    ab_type:'Test type', ab_alpha:'Alpha α',
+    ab_chart_title:'Distribution Preview', ab_chart_desc:'Sampling distributions of both groups.',
+    ab_info1_h:'Under H₀', ab_info1_b:'the two distributions are identical. The test statistic measures how many standard errors apart the observed means are.',
+    ab_info2_b:'probability of observing a test statistic this extreme, assuming the null is true. If p < α, we reject H₀.',
+    bayes_title:'Beta-Binomial Posterior',
+    bayes_desc:'Bayesian inference for conversion rates using a Beta prior.',
+    bayes_chart_title:'Posterior Curves', bayes_chart_desc:'Beta distributions after observing data.',
+    bayes_info1_h:'Posterior mean', bayes_info1_b:'(α₀+k)/(α₀+β₀+n) — best estimate of the true conversion rate.',
+    bayes_info2_b:'estimated via Monte Carlo sampling from both posteriors.',
+    clt_title:'Central Limit Theorem — Live Simulation',
+    clt_desc:'Sample means from any distribution converge to a Normal as n grows. Watch the sampling distribution emerge in real time.',
+    clt_pop_label:'Population distribution', clt_samp_label:'Sampling distribution of X̄',
+    opt_uniform:'Uniform [0,1]', opt_exp:'Exponential(1)', opt_bimodal:'Bimodal', opt_skew:'Right-Skewed',
+    s2_title:'Z-Scores, CI &amp; Effect Size',
+    s2_desc:'Standardisation, confidence intervals, and effect size measures — the tools that connect raw data to actionable interpretation.',
+    tab_zscore:'Z-Score', tab_ci:'Confidence Interval', tab_effect:'Effect Size', tab_tdist:'t vs Z',
+    zs_title:'Z-Score Transformer',
+    zs_desc:'Standardise any observation to see where it falls in the standard normal distribution.',
+    zs_chart_title:'Standard Normal', zs_chart_desc:'Shaded area = percentile at the current Z-score.',
+    zs_info1_h:'Standardisation', zs_info1_b:'Z tells you how many standard deviations X is above or below the mean. Z=0 is the mean; Z=±1 covers ~68% of data; Z=±2 covers ~95%.',
+    zs_info2_h:'Percentile', zs_info2_b:'Φ(Z) — the proportion of values below X. If Z=1.64 then ~95% of values lie below this point.',
+    ci_title:'CI Calculator',
+    ci_desc:'Confidence interval for a population mean. Choose known σ (Z-interval) or estimated s (t-interval).',
+    ci_mode:'Mode', ci_mode_z:'Z (known σ)', ci_mode_t:'t (estimated s)',
+    ci_chart_title:'Interval Visualisation', ci_chart_desc:'The interval and how it changes with n.',
+    ci_info1_h:'Interpretation', ci_info1_b:'A 95% CI means: if we repeated the experiment many times, ~95% of computed intervals would contain the true parameter.',
+    ci_info2_h:'Margin of Error', ci_info2_b:'Half-width of the CI. Decreases as n grows (∝ 1/√n) or as confidence level drops.',
+    es_title:'Effect Size — Cohen\'s d &amp; h',
+    es_desc:'Practical significance: how big is the difference in standardised units? Complements the p-value.',
+    es_chart_title:'Distribution Overlap', es_chart_desc:'Visualise how Cohen\'s d maps to distributional overlap.',
+    es_info1_h:'Convention (Cohen, 1988)', es_info1_b:'d < 0.2 = negligible · 0.2–0.5 = small · 0.5–0.8 = medium · >0.8 = large.',
+    es_info2_h:'Why it matters', es_info2_b:'Statistical significance (p-value) depends on sample size. Effect size is independent of n — it measures the magnitude of the difference itself.',
+    tz_title:'t-distribution vs Normal',
+    tz_desc:'The t-distribution has heavier tails when df is small. It converges to N(0,1) as df → ∞.',
+    tz_chart_title:'Tail Comparison', tz_chart_desc:'t(ν) vs N(0,1) — shaded = rejection region.',
+    tz_info1_h:'When to use t', tz_info1_b:'When σ is unknown and estimated from sample (practically always). For n > 30, the difference from Z is negligible.',
+    tz_info2_h:'Critical value', tz_info2_b:'The value t* such that P(|T| > t*) = α. Larger than z* because of heavier tails, especially at low df.',
+    s3_title:'Advanced Methods',
+    s3_desc:'Variance reduction, minimal detectable effect, and multi-armed bandit simulation — tools for designing rigorous experiments.',
+    tab_vr:'Variance Reduction', tab_mde:'MDE', tab_mab:'Bandits',
+    vr_title:'CUPED / Covariance Adjustment',
+    vr_desc:'CUPED removes variance explained by a pre-experiment covariate, increasing statistical power without more data.',
+    vr_chart_title:'Variance Decomposition', vr_chart_desc:'Adjusted variance as a function of ρ.',
+    mde_title:'MDE Calculator',
+    mde_desc:'MDE is the smallest effect your experiment can reliably detect given sample size, baseline, α and power.',
+    mde_chart_title:'MDE vs Sample Size', mde_chart_desc:'How MDE shrinks as you collect more data.',
+    mab_title:'Thompson Sampling — 3 Arms',
+    mab_desc:'Each round: sample θ from each arm\'s Beta posterior, pick the highest, observe reward, update.',
+    mab_chart_title:'Cumulative Regret', mab_chart_desc:'Thompson Sampling converges: regret grows sub-linearly.',
+    s4_title:'Equations',
+    s4_desc:'Linear and nonlinear equations with geometric intuition. Roots, slopes, discriminants — visualised on a Cartesian plane.',
+    lin_title:'Linear Equation', lin_desc:'Solve ax + b = 0. Root, slope, y-intercept.',
+    quad_title:'Quadratic Equation', quad_desc:'Solve ax² + bx + c = 0. Roots, vertex, discriminant.',
+    s5_title:'Regression Lab',
+    s5_desc:'Generate synthetic data, fit models, inspect residuals. Click the canvas to add custom points.',
+    reg_gen_title:'Data Generator', reg_gen_desc:'Choose a scenario and generate data.',
+    sc_linear:'Linear', sc_quad:'Quadratic', sc_sin:'Sinusoidal',
+    reg_metrics_title:'Model Metrics', reg_metrics_desc:'Fit statistics for linear and polynomial models.',
+    reg_empty:'Generate data to see metrics.',
+    reg_info_r2:'proportion of variance in Y explained by the model. R²=1 is perfect fit; R²=0 means the model explains nothing.',
+    reg_info_rmse:'root mean squared error — on the same scale as Y, interpretable as the typical prediction error.',
+    reg_info_mae:'mean absolute error — robust to outliers unlike RMSE.',
+    reg_info_resvar_h:'Residual variance', reg_info_resvar_b:'variance remaining after the model accounts for the trend. Low residual variance = model captures most of the signal.',
+    reg_plot_title:'Regression Plot', reg_plot_desc:'● data  — linear fit  -- quadratic fit',
+    reg_hint:'Click on the plot to add custom data points.',
+    btn_run:'Run Simulation', btn_generate:'Generate Data', btn_clear:'Clear',
+    footer_text:'no dependencies · deploy-ready',
+    lbl_mean_a:'Mean A', lbl_mean_b:'Mean B', lbl_std_a:'Std A (σ)', lbl_std_b:'Std B (σ)',
+    lbl_n_a:'n A', lbl_n_b:'n B', lbl_conv_a:'Conv A', lbl_trials_a:'Trials A',
+    lbl_conv_b:'Conv B', lbl_trials_b:'Trials B', lbl_prior_a:'Prior α', lbl_prior_b:'Prior β',
+    lbl_population:'Population', lbl_sample_n:'Sample size n', lbl_sims:'Simulations',
+    lbl_baseline:'Baseline p₀', lbl_total_users:'Total users', lbl_alpha:'Alpha α',
+    lbl_power:'Power 1−β', lbl_corr:'Correlation ρ', lbl_base_var:'Base variance σ²',
+    lbl_slope:'a (slope)', lbl_intercept:'b (intercept)', lbl_noise:'Noise σ',
+    lbl_points_n:'Points n', lbl_true_pa:'True p(A)', lbl_true_pb:'True p(B)',
+    lbl_true_pc:'True p(C)', lbl_rounds:'Rounds', lbl_df:'Degrees of freedom ν',
+    lbl_conf:'Confidence %', lbl_sample_mean:'(sample mean)', lbl_prop:'(proportion)',
+    // result labels
+    r_effect:'Effect (B−A)', r_se:'Std Error', r_stat:'Statistic', r_pval:'p-value',
+    r_ci_lo:'CI Low', r_ci_hi:'CI High', r_df:'Degrees of freedom',
+    r_post_a:'Posterior Mean A', r_post_b:'Posterior Mean B', r_pba:'P(B > A)',
+    r_base_var:'Base Variance', r_adj_var:'Adj. Variance', r_reduction:'Reduction',
+    r_abs_mde:'Absolute MDE', r_rel_mde:'Relative MDE', r_per_group:'Users / Group',
+    r_zscore:'Z-Score', r_percentile:'Percentile', r_pct_above:'% Above',
+    r_margin:'Margin of Error', r_ci_lower:'CI Lower', r_ci_upper:'CI Upper', r_width:'Width',
+    r_cohens_d:'Cohen\'s d', r_cohens_h:'Cohen\'s h', r_power_est:'Power estimate',
+    r_overlap:'Overlap',r_effect_size:'Effect size',
+    r_crit_t:'Critical t*', r_crit_z:'Critical z*', r_tail:'Tail area',
+    verdict_sig_pre:'✓ Significant at α=', verdict_sig_suf:' — reject H₀',
+    verdict_ns_pre:'✗ Not significant at α=', verdict_ns_suf:' — fail to reject H₀',
+    verdict_bayes_yes:'✓ Strong evidence B > A', verdict_bayes_no:'◦ Insufficient evidence',
+    verdict_winner:'✓ Winner: Arm',
+    disc_2real:'Two distinct real roots — parabola crosses x-axis twice.',
+    disc_double:'One repeated root — parabola is tangent to x-axis.',
+    disc_complex:'No real roots — parabola does not cross x-axis.',
+    lbl_root:'Root x', lbl_slope_res:'Slope a', lbl_y_int:'y-intercept',
+    lbl_disc:'Discriminant Δ', lbl_vertex_x:'Vertex x', lbl_vertex_y:'Vertex y',
+    lbl_beta0:'β₀', lbl_beta1:'β₁', lbl_beta2:'β₂',
+    lbl_lin_fit:'Linear fit', lbl_quad_fit:'Quadratic fit',
+  },
+  ru: {
+    nav_stats:'Статистика', nav_zci:'Z / ДИ', nav_adv:'Продвинутые',
+    nav_eq:'Уравнения', nav_reg:'Регрессия',
+    hero_eyebrow:'Визуальная математика',
+    hero_title_html:'Математика,<br/>которую <em>видно</em>',
+    hero_sub:'Интерактивные калькуляторы, живые распределения, лаборатория регрессии и байесовские апостериорные — в чистой математической ясности.',
+    hero_cta1:'Статистика', hero_cta2:'Лаборатория регрессии',
+    s1_title:'Вывод и тестирование',
+    s1_desc:'Центральная предельная теорема, проверка гипотез, p-value, доверительные интервалы и байесовский взгляд — основа статистического мышления.',
+    tab_ab:'A/B тест', tab_bayes:'Байесовский', tab_clt:'ЦПТ',
+    ab_title:'Калькулятор A/B',
+    ab_desc:'Z-тест или t-тест Уэлча для сравнения средних двух групп.',
+    ab_type:'Тип теста', ab_alpha:'Уровень α',
+    ab_chart_title:'Превью распределений', ab_chart_desc:'Выборочные распределения обеих групп.',
+    ab_info1_h:'При H₀', ab_info1_b:'оба распределения совпадают. Тестовая статистика — количество стандартных ошибок между наблюдаемыми средними.',
+    ab_info2_b:'вероятность наблюдать столь экстремальную статистику при истинной нулевой гипотезе. Если p < α — отвергаем H₀.',
+    bayes_title:'Бета-биномиальный апостериорный',
+    bayes_desc:'Байесовский вывод для конверсий через Beta-распределение.',
+    bayes_chart_title:'Апостериорные кривые', bayes_chart_desc:'Beta-распределения после наблюдения данных.',
+    bayes_info1_h:'Апостериорное среднее', bayes_info1_b:'(α₀+k)/(α₀+β₀+n) — лучшая оценка истинной конверсии.',
+    bayes_info2_b:'оценивается методом Монте-Карло — выборки из обоих апостериорных.',
+    clt_title:'Центральная предельная теорема — живая симуляция',
+    clt_desc:'Выборочные средние из любого распределения сходятся к нормальному при росте n. Наблюдайте за возникновением выборочного распределения.',
+    clt_pop_label:'Распределение генеральной совокупности', clt_samp_label:'Выборочное распределение X̄',
+    opt_uniform:'Равномерное [0,1]', opt_exp:'Показательное(1)', opt_bimodal:'Бимодальное', opt_skew:'Правоскошенное',
+    s2_title:'Z-оценки, ДИ и размер эффекта',
+    s2_desc:'Стандартизация, доверительные интервалы и метрики размера эффекта — инструменты для интерпретации данных.',
+    tab_zscore:'Z-оценка', tab_ci:'Доверительный интервал', tab_effect:'Размер эффекта', tab_tdist:'t против Z',
+    zs_title:'Трансформатор Z-оценок',
+    zs_desc:'Стандартизируйте наблюдение и посмотрите, где оно находится в стандартном нормальном распределении.',
+    zs_chart_title:'Стандартное нормальное', zs_chart_desc:'Закрашенная область = перцентиль при текущей Z-оценке.',
+    zs_info1_h:'Стандартизация', zs_info1_b:'Z показывает, на сколько стандартных отклонений X выше или ниже среднего. Z=0 — среднее; Z=±1 охватывает ~68% данных; Z=±2 — ~95%.',
+    zs_info2_h:'Перцентиль', zs_info2_b:'Φ(Z) — доля значений ниже X. При Z=1.64 ~95% значений лежат ниже этой точки.',
+    ci_title:'Калькулятор ДИ',
+    ci_desc:'Доверительный интервал для среднего генеральной совокупности. Выберите известную σ (Z-интервал) или оценённую s (t-интервал).',
+    ci_mode:'Режим', ci_mode_z:'Z (σ известна)', ci_mode_t:'t (s оценена)',
+    ci_chart_title:'Визуализация интервала', ci_chart_desc:'Интервал и его изменение при росте n.',
+    ci_info1_h:'Интерпретация', ci_info1_b:'95% ДИ означает: при многократном повторении эксперимента ~95% построенных интервалов будут содержать истинный параметр.',
+    ci_info2_h:'Погрешность', ci_info2_b:'Полуширина ДИ. Уменьшается с ростом n (∝ 1/√n) или при снижении уровня доверия.',
+    es_title:'Размер эффекта — d и h Коэна',
+    es_desc:'Практическая значимость: насколько велико различие в стандартизированных единицах? Дополняет p-value.',
+    es_chart_title:'Перекрытие распределений', es_chart_desc:'Как d Коэна соответствует перекрытию распределений.',
+    es_info1_h:'Конвенция (Коэн, 1988)', es_info1_b:'d < 0.2 = пренебрежимо · 0.2–0.5 = малый · 0.5–0.8 = средний · >0.8 = большой.',
+    es_info2_h:'Почему важно', es_info2_b:'Статистическая значимость (p-value) зависит от размера выборки. Размер эффекта не зависит от n — он измеряет величину различия напрямую.',
+    tz_title:'t-распределение против нормального',
+    tz_desc:'t-распределение имеет более тяжёлые хвосты при малых df. Сходится к N(0,1) при df → ∞.',
+    tz_chart_title:'Сравнение хвостов', tz_chart_desc:'t(ν) против N(0,1) — закрашено = область отклонения.',
+    tz_info1_h:'Когда использовать t', tz_info1_b:'Когда σ неизвестна и оценивается по выборке (почти всегда). При n > 30 разница с Z пренебрежимо мала.',
+    tz_info2_h:'Критическое значение', tz_info2_b:'Значение t*, при котором P(|T| > t*) = α. Больше z* из-за тяжёлых хвостов, особенно при малых df.',
+    s3_title:'Продвинутые методы',
+    s3_desc:'Снижение дисперсии, минимальный определяемый эффект и симуляция многоруких бандитов — инструменты для проектирования строгих экспериментов.',
+    tab_vr:'Снижение дисперсии', tab_mde:'MDE', tab_mab:'Бандиты',
+    vr_title:'CUPED / Ковариационная корректировка',
+    vr_desc:'CUPED убирает дисперсию, объясняемую ковариатой до эксперимента, увеличивая мощность без сбора новых данных.',
+    vr_chart_title:'Декомпозиция дисперсии', vr_chart_desc:'Скорректированная дисперсия как функция ρ.',
+    mde_title:'Калькулятор MDE',
+    mde_desc:'MDE — наименьший эффект, который ваш эксперимент способен надёжно обнаружить при заданных размере выборки, базовом уровне, α и мощности.',
+    mde_chart_title:'MDE vs Размер выборки', mde_chart_desc:'Как MDE уменьшается по мере сбора данных.',
+    mab_title:'Семплирование Томпсона — 3 руки',
+    mab_desc:'На каждом шаге: семплируем θ из Beta-апостериорного каждой руки, выбираем наибольшее, наблюдаем награду, обновляем.',
+    mab_chart_title:'Накопленное сожаление', mab_chart_desc:'Семплирование Томпсона сходится: сожаление растёт сублинейно.',
+    s4_title:'Уравнения',
+    s4_desc:'Линейные и нелинейные уравнения с геометрической интуицией. Корни, наклоны, дискриминанты — на декартовой плоскости.',
+    lin_title:'Линейное уравнение', lin_desc:'Решить ax + b = 0. Корень, наклон, точка пересечения.',
+    quad_title:'Квадратное уравнение', quad_desc:'Решить ax² + bx + c = 0. Корни, вершина, дискриминант.',
+    s5_title:'Лаборатория регрессии',
+    s5_desc:'Генерируйте синтетические данные, обучайте модели, исследуйте остатки. Кликайте по холсту для добавления точек.',
+    reg_gen_title:'Генератор данных', reg_gen_desc:'Выберите сценарий и сгенерируйте данные.',
+    sc_linear:'Линейный', sc_quad:'Квадратичный', sc_sin:'Синусоидальный',
+    reg_metrics_title:'Метрики модели', reg_metrics_desc:'Статистика качества подгонки для линейной и полиномиальной моделей.',
+    reg_empty:'Сгенерируйте данные для просмотра метрик.',
+    reg_info_r2:'доля дисперсии Y, объясняемая моделью. R²=1 — идеальная подгонка; R²=0 — модель ничего не объясняет.',
+    reg_info_rmse:'корень из среднеквадратичной ошибки — в единицах Y, интерпретируется как типичная ошибка предсказания.',
+    reg_info_mae:'средняя абсолютная ошибка — устойчивее к выбросам, чем RMSE.',
+    reg_info_resvar_h:'Остаточная дисперсия', reg_info_resvar_b:'дисперсия, оставшаяся после учёта тренда моделью. Малая остаточная дисперсия = модель улавливает большую часть сигнала.',
+    reg_plot_title:'График регрессии', reg_plot_desc:'● данные  — линейная  -- квадратичная',
+    reg_hint:'Кликните по графику для добавления точек.',
+    btn_run:'Запустить симуляцию', btn_generate:'Сгенерировать', btn_clear:'Очистить',
+    footer_text:'без зависимостей · готово к публикации',
+    lbl_mean_a:'Среднее A', lbl_mean_b:'Среднее B', lbl_std_a:'СКО A (σ)', lbl_std_b:'СКО B (σ)',
+    lbl_n_a:'n A', lbl_n_b:'n B', lbl_conv_a:'Конверсии A', lbl_trials_a:'Испытания A',
+    lbl_conv_b:'Конверсии B', lbl_trials_b:'Испытания B', lbl_prior_a:'Приор α', lbl_prior_b:'Приор β',
+    lbl_population:'Распределение', lbl_sample_n:'Размер выборки n', lbl_sims:'Симуляции',
+    lbl_baseline:'Базовый уровень p₀', lbl_total_users:'Всего пользователей', lbl_alpha:'Уровень α',
+    lbl_power:'Мощность 1−β', lbl_corr:'Корреляция ρ', lbl_base_var:'Базовая дисперсия σ²',
+    lbl_slope:'a (наклон)', lbl_intercept:'b (сдвиг)', lbl_noise:'Шум σ',
+    lbl_points_n:'Точек n', lbl_true_pa:'Истинное p(A)', lbl_true_pb:'Истинное p(B)',
+    lbl_true_pc:'Истинное p(C)', lbl_rounds:'Раундов', lbl_df:'Степени свободы ν',
+    lbl_conf:'Доверие %', lbl_sample_mean:'(выборочное ср.)', lbl_prop:'(доля)',
+    r_effect:'Эффект (B−A)', r_se:'Стд. ошибка', r_stat:'Статистика', r_pval:'p-value',
+    r_ci_lo:'ДИ нижний', r_ci_hi:'ДИ верхний', r_df:'Степени свободы',
+    r_post_a:'Апост. среднее A', r_post_b:'Апост. среднее B', r_pba:'P(B > A)',
+    r_base_var:'Базовая дисперсия', r_adj_var:'Скорр. дисперсия', r_reduction:'Снижение',
+    r_abs_mde:'Абсолютный MDE', r_rel_mde:'Относительный MDE', r_per_group:'Польз. / группа',
+    r_zscore:'Z-оценка', r_percentile:'Перцентиль', r_pct_above:'% выше',
+    r_margin:'Погрешность', r_ci_lower:'ДИ нижний', r_ci_upper:'ДИ верхний', r_width:'Ширина',
+    r_cohens_d:'d Коэна', r_cohens_h:'h Коэна', r_power_est:'Оценка мощности',
+    r_overlap:'Перекрытие', r_effect_size:'Размер эффекта',
+    r_crit_t:'Критическое t*', r_crit_z:'Критическое z*', r_tail:'Хвостовая вероятность',
+    verdict_sig_pre:'✓ Значимо при α=', verdict_sig_suf:' — отвергаем H₀',
+    verdict_ns_pre:'✗ Незначимо при α=', verdict_ns_suf:' — не отвергаем H₀',
+    verdict_bayes_yes:'✓ Сильные свидетельства B > A', verdict_bayes_no:'◦ Недостаточно свидетельств',
+    verdict_winner:'✓ Победитель: рука',
+    disc_2real:'Два различных вещественных корня — парабола пересекает ось x дважды.',
+    disc_double:'Один кратный корень — парабола касается оси x.',
+    disc_complex:'Нет вещественных корней — парабола не пересекает ось x.',
+    lbl_root:'Корень x', lbl_slope_res:'Наклон a', lbl_y_int:'y-пересечение',
+    lbl_disc:'Дискриминант Δ', lbl_vertex_x:'Вершина x', lbl_vertex_y:'Вершина y',
+    lbl_beta0:'β₀', lbl_beta1:'β₁', lbl_beta2:'β₂',
+    lbl_lin_fit:'Линейная подгонка', lbl_quad_fit:'Квадратичная подгонка',
+  }
+};
+
+let currentLang = 'en';
+
+function t(key){ return (LANG[currentLang]||LANG.en)[key] || (LANG.en[key] || key); }
+
+function setLang(lang){
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active', b.textContent===lang.toUpperCase()));
+  document.documentElement.lang = lang;
+  // Update all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    const val = t(key);
+    if(val) el.innerHTML = val;
+  });
+  // Re-run all calcs to refresh result labels
+  calcAB(); calcBayes(); calcZScore(); calcCI(); calcEffect(); drawTDist();
+  updateVR(); calcMDE(); calcLinear(); calcQuad();
+  if(regData.length) fitAndDraw();
+}
+
+// ============================================================
+//  SYNC SLIDERS ↔ INPUTS
+// ============================================================
+function syncNR(id){
+  const inp=document.getElementById(id), rng=document.getElementById(id+'-r');
+  if(rng && inp) rng.value=inp.value;
+}
+function syncRN(id){
+  const inp=document.getElementById(id), rng=document.getElementById(id+'-r');
+  if(inp && rng) inp.value=rng.value;
+}
+
+// ============================================================
+//  TAB SWITCHING
+// ============================================================
+function switchTab(prefix, id, btn){
+  const allPanels=document.querySelectorAll(`[id^="${prefix}-"].tab-panel`);
+  allPanels.forEach(p=>p.classList.remove('active'));
+  document.getElementById(`${prefix}-${id}`).classList.add('active');
+  if(btn){
+    btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+
+// ============================================================
+//  MATH UTILITIES
+// ============================================================
+function normPDF(x,mu=0,s=1){ return Math.exp(-0.5*((x-mu)/s)**2)/(s*Math.sqrt(2*Math.PI)); }
+function normCDF(z){
+  const t=1/(1+0.2316419*Math.abs(z));
+  const p=1-Math.exp(-0.5*z*z)/Math.sqrt(2*Math.PI)*t*(0.319381530+t*(-0.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));
+  return z>=0?p:1-p;
+}
+function invNorm(p){
+  if(p<=0)return -Infinity;if(p>=1)return Infinity;
+  const a=[2.50662823884,-18.61500062529,41.39119773534,-25.44106049637];
+  const b=[-8.47351093090,23.08336743743,-21.06224101826,3.13082909833];
+  const c=[0.3374754822726147,0.9761690190917186,0.1607979714918209,0.0276438810333863,0.0038405729373609,0.0003951896511349,0.0000321767881768,0.0000002888167364,0.0000003960315187];
+  let r,x;const y=p-0.5;
+  if(Math.abs(y)<0.42){r=y*y;x=y*(((a[3]*r+a[2])*r+a[1])*r+a[0])/((((b[3]*r+b[2])*r+b[1])*r+b[0])*r+1);}
+  else{r=p<0.5?p:1-p;r=Math.log(-Math.log(r));x=c[0]+r*(c[1]+r*(c[2]+r*(c[3]+r*(c[4]+r*(c[5]+r*(c[6]+r*(c[7]+r*c[8])))))));if(y<0)x=-x;}
+  return x;
+}
+function randn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function logGamma(x){const c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,1.208650973866179e-3,-5.395239384953e-6];let y=x,tmp=x+5.5;tmp-=(x+0.5)*Math.log(tmp);let s=1.000000000190015;for(let j=0;j<6;j++)s+=c[j]/++y;return -tmp+Math.log(2.5066282746310005*s/x);}
+function logBeta(a,b){return logGamma(a)+logGamma(b)-logGamma(a+b);}
+function betaPDF(x,a,b){if(x<=0||x>=1)return 0;return Math.exp((a-1)*Math.log(x)+(b-1)*Math.log(1-x)-logBeta(a,b));}
+function sampleBeta(a,b){
+  if(a<1||b<1){let x,y;do{x=Math.pow(Math.random(),1/a);y=Math.pow(Math.random(),1/b);}while(x+y>1);return x/(x+y);}
+  const mu=a/(a+b),v=a*b/((a+b)**2*(a+b+1));
+  return Math.max(1e-6,Math.min(1-1e-6,mu+Math.sqrt(v)*randn()));
+}
+function pFromZ(z){return 2*(1-normCDF(Math.abs(z)));}
+function welchDF(sa,sb,na,nb){const va=sa*sa/na,vb=sb*sb/nb;return (va+vb)**2/(va**2/(na-1)+vb**2/(nb-1));}
+function tPDF(t,df){const c=Math.exp(logGamma((df+1)/2)-logGamma(df/2)-0.5*Math.log(df*Math.PI));return c*Math.pow(1+t*t/df,-(df+1)/2);}
+// Regularized incomplete beta via continued fraction
+function ibetaCF(a,b,x){let f=1,C=1,D=0;for(let i=0;i<=200;i++){let m=Math.floor(i/2),dm;if(i==0)dm=1;else if(i%2==0)dm=m*(b-m)*x/((a+2*m-1)*(a+2*m));else dm=-(a+m)*(a+b+m)*x/((a+2*m)*(a+2*m+1));D=1+dm*D;if(Math.abs(D)<1e-30)D=1e-30;D=1/D;C=1+dm/C;if(Math.abs(C)<1e-30)C=1e-30;const d=C*D;f*=d;if(Math.abs(d-1)<1e-9)break;}const front=Math.exp(Math.log(x)*a+Math.log(1-x)*b-logBeta(a,b))/a;return front*f;}
+function tCDF(t,df){const x=df/(df+t*t);const p=0.5*ibetaCF(df/2,0.5,x);return t>=0?1-p:p;}
+function invT(p,df,tol=1e-8,maxIter=100){// Newton's method
+  let t=invNorm(p);for(let i=0;i<maxIter;i++){const f=tCDF(t,df)-p;const fp=tPDF(t,df);const dt=f/fp;t-=dt;if(Math.abs(dt)<tol)break;}return t;}
+
+// ============================================================
+//  CANVAS HELPERS
+// ============================================================
+function initCanvas(id,H){
+  const canvas=document.getElementById(id);
+  const ctx=canvas.getContext('2d');
+  const dpr=devicePixelRatio||1;
+  const W=canvas.parentElement.clientWidth-(canvas.parentElement.tagName==='DIV'?36:0);
+  canvas.style.width=W+'px'; canvas.style.height=H+'px';
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  ctx.scale(dpr,dpr);
+  return {ctx,W,H};
+}
+function axisStyle(ctx){ctx.strokeStyle='#d8d8d8';ctx.lineWidth=1;}
+function monoFont(ctx,sz=10){ctx.font=`${sz}px DM Mono,monospace`;}
+
+// ============================================================
+//  HERO CANVAS
+// ============================================================
+(function(){
+  const canvas=document.getElementById('heroCanvas'),ctx=canvas.getContext('2d');
+  let t=0,W=0,H=0,raf;
+  function resize(){W=canvas.offsetWidth;H=canvas.offsetHeight;canvas.width=W*devicePixelRatio;canvas.height=H*devicePixelRatio;ctx.scale(devicePixelRatio,devicePixelRatio);}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(0,0,0,0.05)';ctx.lineWidth=1;
+    for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    const ay=H*0.62;
+    ctx.strokeStyle='rgba(0,0,0,0.12)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(0,ay);ctx.lineTo(W,ay);ctx.stroke();
+    ctx.beginPath();ctx.strokeStyle='rgba(0,0,0,0.88)';ctx.lineWidth=2.5;
+    for(let px=0;px<W;px++){const x=-3.5+7*px/W;const y=normPDF(x+0.25*Math.sin(t*0.007));const py=ay-y*(H*0.58);if(px===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+    ctx.stroke();
+    ctx.beginPath();ctx.setLineDash([5,8]);ctx.strokeStyle='rgba(0,0,0,0.28)';ctx.lineWidth=1.5;
+    for(let px=0;px<W;px++){const x=-3.5+7*px/W;const y=normPDF(x-0.5,0.6,0.75);const py=ay-y*(H*0.44);if(px===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+    ctx.stroke();ctx.setLineDash([]);
+    ctx.strokeStyle='rgba(0,0,0,0.18)';ctx.lineWidth=1;
+    for(let i=-3;i<=3;i++){const px=(i+3.5)/7*W;ctx.beginPath();ctx.moveTo(px,ay-4);ctx.lineTo(px,ay+4);ctx.stroke();}
+    monoFont(ctx,11);ctx.fillStyle='rgba(0,0,0,0.3)';
+    ctx.fillText('N(μ, σ²)',W-80,ay-H*0.4);
+    t++;raf=requestAnimationFrame(draw);
+  }
+  resize();draw();
+  window.addEventListener('resize',()=>{cancelAnimationFrame(raf);resize();});
+})();
+
+// ============================================================
+//  A/B TEST
+// ============================================================
+function calcAB(){
+  const type=document.getElementById('ab-type').value;
+  const ma=+document.getElementById('ab-ma').value, mb=+document.getElementById('ab-mb').value;
+  const sa=+document.getElementById('ab-sa').value, sb=+document.getElementById('ab-sb').value;
+  const na=+document.getElementById('ab-na').value, nb=+document.getElementById('ab-nb').value;
+  const alpha=+document.getElementById('ab-alpha').value;
+  if(!na||!nb||!sa||!sb) return;
+  const effect=mb-ma, se=Math.sqrt(sa*sa/na+sb*sb/nb);
+  let stat=effect/se, pval, df=Infinity;
+  if(type==='z'){pval=pFromZ(stat);}
+  else{df=welchDF(sa,sb,na,nb);const p2=2*(1-tCDF(Math.abs(stat),df));pval=Math.max(0,Math.min(1,p2));}
+  const za2=invNorm(1-alpha/2);
+  const ciLo=effect-za2*se, ciHi=effect+za2*se;
+  const sig=pval<alpha;
+  const html=`<div class="result-grid">
+    <div class="result-item"><div class="result-label">${t('r_effect')}</div><div class="result-value">${effect.toFixed(5)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_se')}</div><div class="result-value">${se.toFixed(5)}</div></div>
+    <div class="result-item"><div class="result-label">${type==='z'?'Z':t('r_stat')}</div><div class="result-value">${stat.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_pval')}</div><div class="result-value ${sig?'sig':''}">${pval<0.0001?'< 0.0001':pval.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_ci_lo')} ${((1-alpha)*100).toFixed(0)}%</div><div class="result-value">${ciLo.toFixed(5)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_ci_hi')} ${((1-alpha)*100).toFixed(0)}%</div><div class="result-value">${ciHi.toFixed(5)}</div></div>
+    ${df!==Infinity?`<div class="result-item"><div class="result-label">${t('r_df')}</div><div class="result-value">${df.toFixed(1)}</div></div>`:''}
+  </div>
+  <div class="verdict ${sig?'yes':'no'}">${sig?t('verdict_sig_pre')+alpha+t('verdict_sig_suf'):t('verdict_ns_pre')+alpha+t('verdict_ns_suf')}</div>`;
+  document.getElementById('ab-results').innerHTML=html;
+  drawABChart(ma,mb,sa,sb,na,nb);
+}
+
+function drawABChart(ma,mb,sa,sb,na,nb){
+  const {ctx,W,H}=initCanvas('abChart',240);
+  const seA=sa/Math.sqrt(na),seB=sb/Math.sqrt(nb);
+  const xMin=Math.min(ma,mb)-4*Math.max(seA,seB), xMax=Math.max(ma,mb)+4*Math.max(seA,seB);
+  const steps=300;const pts=[];let yMax=0;
+  for(let i=0;i<=steps;i++){const x=xMin+(xMax-xMin)*i/steps;const ya=normPDF(x,ma,seA),yb=normPDF(x,mb,seB);pts.push({x,ya,yb});yMax=Math.max(yMax,ya,yb);}
+  yMax*=1.12;
+  const pad={l:46,r:14,t:16,b:32};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const toX=v=>pad.l+(v-xMin)/(xMax-xMin)*cW;const toY=v=>pad.t+cH*(1-v/yMax);
+  ctx.clearRect(0,0,W,H);
+  axisStyle(ctx);ctx.beginPath();ctx.moveTo(pad.l,pad.t+cH);ctx.lineTo(pad.l+cW,pad.t+cH);ctx.stroke();
+  monoFont(ctx);ctx.fillStyle='#bbb';
+  for(let i=0;i<=5;i++){const v=xMin+(xMax-xMin)*i/5;ctx.fillText(v.toFixed(3),toX(v)-14,pad.t+cH+16);}
+  ctx.beginPath();ctx.strokeStyle='rgba(10,10,10,0.9)';ctx.lineWidth=2;
+  pts.forEach((p,i)=>{if(i===0)ctx.moveTo(toX(p.x),toY(p.ya));else ctx.lineTo(toX(p.x),toY(p.ya));});ctx.stroke();
+  ctx.beginPath();ctx.strokeStyle='rgba(10,10,10,0.35)';ctx.lineWidth=2;ctx.setLineDash([6,4]);
+  pts.forEach((p,i)=>{if(i===0)ctx.moveTo(toX(p.x),toY(p.yb));else ctx.lineTo(toX(p.x),toY(p.yb));});ctx.stroke();ctx.setLineDash([]);
+  monoFont(ctx,11);ctx.fillStyle='#333';ctx.fillText('A',toX(ma)+8,toY(normPDF(ma,ma,seA)));
+  ctx.fillStyle='#999';ctx.fillText('B',toX(mb)+8,toY(normPDF(mb,mb,seB)));
+}
+
+// ============================================================
+//  BAYESIAN
+// ============================================================
+function calcBayes(){
+  const ca=+document.getElementById('by-ca').value,ta=+document.getElementById('by-ta').value;
+  const cb=+document.getElementById('by-cb').value,tb=+document.getElementById('by-tb').value;
+  const pa=+document.getElementById('by-pa').value,pb=+document.getElementById('by-pb').value;
+  if(ca>ta||cb>tb||ca<0||cb<0) return;
+  const aa=pa+ca,ba=pb+(ta-ca),ab=pa+cb,bb=pb+(tb-cb);
+  const meanA=aa/(aa+ba),meanB=ab/(ab+bb);
+  let wins=0;for(let i=0;i<30000;i++){if(sampleBeta(ab,bb)>sampleBeta(aa,ba))wins++;}
+  const prob=wins/30000;
+  document.getElementById('bayes-results').innerHTML=`<div class="result-grid">
+    <div class="result-item"><div class="result-label">${t('r_post_a')}</div><div class="result-value">${meanA.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_post_b')}</div><div class="result-value">${meanB.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_pba')}</div><div class="result-value ${prob>0.95?'sig':''}">${(prob*100).toFixed(1)}%</div></div>
+  </div>
+  <div class="verdict ${prob>0.95?'yes':'no'}">${prob>0.95?t('verdict_bayes_yes'):t('verdict_bayes_no')} (${(prob*100).toFixed(1)}%)</div>`;
+  drawBayesChart(aa,ba,ab,bb);
+}
+
+function drawBayesChart(aa,ba,ab,bb){
+  const {ctx,W,H}=initCanvas('bayesChart',260);
+  const meanA=aa/(aa+ba),meanB=ab/(ab+bb);
+  const xMin=Math.max(0,Math.min(meanA,meanB)-0.12),xMax=Math.min(1,Math.max(meanA,meanB)+0.12);
+  const steps=300;const pts=[];let yMax=0;
+  for(let i=0;i<=steps;i++){const x=xMin+(xMax-xMin)*i/steps;const ya=betaPDF(x,aa,ba),yb=betaPDF(x,ab,bb);pts.push({x,ya,yb});yMax=Math.max(yMax,ya,yb);}
+  yMax*=1.1;
+  const pad={l:46,r:14,t:16,b:32};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const toX=v=>pad.l+(v-xMin)/(xMax-xMin)*cW;const toY=v=>pad.t+cH*(1-v/yMax);
+  ctx.clearRect(0,0,W,H);
+  axisStyle(ctx);ctx.beginPath();ctx.moveTo(pad.l,pad.t+cH);ctx.lineTo(pad.l+cW,pad.t+cH);ctx.stroke();
+  monoFont(ctx);ctx.fillStyle='#bbb';
+  for(let i=0;i<=5;i++){const v=xMin+(xMax-xMin)*i/5;ctx.fillText(v.toFixed(3),toX(v)-14,pad.t+cH+16);}
+  // fill A
+  ctx.beginPath();pts.forEach((p,i)=>{if(i===0)ctx.moveTo(toX(p.x),pad.t+cH);else if(i===1){ctx.lineTo(toX(p.x),pad.t+cH);ctx.lineTo(toX(p.x),toY(p.ya));}else ctx.lineTo(toX(p.x),toY(p.ya));});ctx.lineTo(toX(pts[pts.length-1].x),pad.t+cH);ctx.closePath();ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fill();
+  ctx.beginPath();ctx.strokeStyle='rgba(10,10,10,0.85)';ctx.lineWidth=2;
+  pts.forEach((p,i)=>{if(i===0)ctx.moveTo(toX(p.x),toY(p.ya));else ctx.lineTo(toX(p.x),toY(p.ya));});ctx.stroke();
+  ctx.beginPath();ctx.setLineDash([6,4]);ctx.strokeStyle='rgba(10,10,10,0.38)';ctx.lineWidth=2;
+  pts.forEach((p,i)=>{if(i===0)ctx.moveTo(toX(p.x),toY(p.yb));else ctx.lineTo(toX(p.x),toY(p.yb));});ctx.stroke();ctx.setLineDash([]);
+  monoFont(ctx,11);ctx.fillStyle='#333';ctx.fillText('A',toX(meanA)+4,toY(yMax*0.8));
+  ctx.fillStyle='#999';ctx.fillText('B',toX(meanB)+4,toY(yMax*0.65));
+}
+
+// ============================================================
+//  CLT
+// ============================================================
+function sampleFrom(dist){
+  switch(dist){
+    case'uniform':return Math.random();
+    case'exp':return -Math.log(1-Math.random());
+    case'bimodal':return Math.random()<0.5?randn()*0.3+1:randn()*0.3+3;
+    case'skew':return Math.pow(Math.random(),3)*4+Math.pow(Math.random(),3)*2;
+  }
+}
+function runCLT(){
+  const dist=document.getElementById('clt-dist').value;
+  const n=parseInt(document.getElementById('clt-n').value)||30;
+  const sims=Math.min(5000,parseInt(document.getElementById('clt-sims').value)||2000);
+  const pop=Array.from({length:2000},()=>sampleFrom(dist));
+  const means=Array.from({length:sims},()=>{let s=0;for(let i=0;i<n;i++)s+=sampleFrom(dist);return s/n;});
+  drawHist('cltPopChart',pop,170,'#0a0a0a');
+  drawHist('cltSampChart',means,170,'#555');
+}
+function drawHist(id,data,H,color){
+  const {ctx,W}=initCanvas(id,H);
+  const min=Math.min(...data),max=Math.max(...data);
+  if(min===max) return;
+  const bins=38;const counts=new Array(bins).fill(0);
+  data.forEach(v=>{const i=Math.min(bins-1,Math.floor((v-min)/(max-min)*bins));counts[i]++;});
+  const maxC=Math.max(...counts);
+  const pad={l:28,r:8,t:8,b:26};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  ctx.clearRect(0,0,W,H);
+  axisStyle(ctx);ctx.beginPath();ctx.moveTo(pad.l,pad.t+cH);ctx.lineTo(pad.l+cW,pad.t+cH);ctx.stroke();
+  const bw=cW/bins;
+  counts.forEach((c,i)=>{const bh=cH*c/maxC;ctx.fillStyle=color;ctx.globalAlpha=0.1+0.75*(c/maxC);ctx.fillRect(pad.l+i*bw,pad.t+cH-bh,bw-0.5,bh);});
+  ctx.globalAlpha=1;
+  monoFont(ctx);ctx.fillStyle='#bbb';
+  ctx.fillText(min.toFixed(2),pad.l,H-4);ctx.fillText(max.toFixed(2),pad.l+cW-22,H-4);
+}
+
+// ============================================================
+//  Z-SCORE
+// ============================================================
+function calcZScore(){
+  const X=+document.getElementById('zs-x').value;
+  const mu=+document.getElementById('zs-mu').value;
+  const sigma=+document.getElementById('zs-sigma').value||1;
+  const Z=(X-mu)/sigma;
+  const pctBelow=normCDF(Z)*100;
+  const pctAbove=(1-normCDF(Z))*100;
+  document.getElementById('zs-results').innerHTML=`
+    <div class="z-highlight">${Z.toFixed(3)}<span>Z-score</span></div>
+    <div class="result-grid">
+      <div class="result-item"><div class="result-label">${t('r_percentile')}</div><div class="result-value sig">${pctBelow.toFixed(2)}%</div></div>
+      <div class="result-item"><div class="result-label">${t('r_pct_above')}</div><div class="result-value">${pctAbove.toFixed(2)}%</div></div>
+      <div class="result-item"><div class="result-label">X</div><div class="result-value">${X}</div></div>
+      <div class="result-item"><div class="result-label">μ</div><div class="result-value">${mu}</div></div>
+    </div>`;
+  drawZScoreChart(Z);
+}
+
+function drawZScoreChart(Z){
+  const {ctx,W,H}=initCanvas('zscoreChart',280);
+  const xMin=-4,xMax=4;
+  const steps=400;const pts=[];let yMax=0;
+  for(let i=0;i<=steps;i++){const x=xMin+(xMax-xMin)*i/steps;const y=normPDF(x);pts.push({x,y});yMax=Math.max(yMax,y);}
+  yMax*=1.12;
+  const pad={l:46,r:14,t:16,b:32};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const toX=v=>pad.l+(v-xMin)/(xMax-xMin)*cW;const toY=v=>pad.t+cH*(1-v/yMax);
+  const Zclamp=Math.max(-4,Math.min(4,Z));
+  ctx.clearRect(0,0,W,H);
+  // Fill shaded region [xMin .. Z]
+  ctx.beginPath();
+  ctx.moveTo(toX(xMin),toY(0));
+  for(let i=0;i<=steps;i++){if(pts[i].x<=Zclamp){ctx.lineTo(toX(pts[i].x),toY(pts[i].y));}}
+  ctx.lineTo(toX(Math.min(Zclamp,xMax)),toY(0));ctx.closePath();
+  ctx.fillStyle='rgba(10,10,10,0.08)';ctx.fill();
+  // Curve
+  ctx.beginPath();ctx.strokeStyle='rgba(10,10,10,0.9)';ctx.lineWidth=2;
+  pts.forEach((p,i)=>{if(i===0)ctx.moveTo(toX(p.x),toY(p.y));else ctx.lineTo(toX(p.x),toY(p.y));});ctx.stroke();
+  // X axis
+  axisStyle(ctx);ctx.beginPath();ctx.moveTo(pad.l,pad.t+cH);ctx.lineTo(pad.l+cW,pad.t+cH);ctx.stroke();
+  // Z line
+  if(Zclamp>xMin&&Zclamp<xMax){
+    ctx.beginPath();ctx.strokeStyle='#0a0a0a';ctx.lineWidth=1.5;
+    ctx.moveTo(toX(Zclamp),pad.t);ctx.lineTo(toX(Zclamp),pad.t+cH);ctx.stroke();
+    monoFont(ctx,11);ctx.fillStyle='#0a0a0a';
+    ctx.fillText(`Z=${Z.toFixed(2)}`,toX(Zclamp)+5,pad.t+20);
+  }
+  monoFont(ctx);ctx.fillStyle='#bbb';
+  [-3,-2,-1,0,1,2,3].forEach(v=>ctx.fillText(v,toX(v)-4,pad.t+cH+16));
+}
+
+// ============================================================
+//  CONFIDENCE INTERVAL
+// ============================================================
+function calcCI(){
+  const mode=document.getElementById('ci-mode').value;
+  const xbar=+document.getElementById('ci-xbar').value;
+  const s=+document.getElementById('ci-s').value||1;
+  const n=Math.max(2,+document.getElementById('ci-n').value);
+  const conf=+document.getElementById('ci-conf').value||95;
+  const alpha=1-conf/100;
+  const se=s/Math.sqrt(n);
+  let crit;
+  if(mode==='z') crit=invNorm(1-alpha/2);
+  else crit=invT(1-alpha/2,n-1);
+  const margin=crit*se;
+  const lo=xbar-margin,hi=xbar+margin;
+  document.getElementById('ci-results').innerHTML=`<div class="result-grid">
+    <div class="result-item"><div class="result-label">${t('r_ci_lower')}</div><div class="result-value sig">${lo.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_ci_upper')}</div><div class="result-value sig">${hi.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_margin')}</div><div class="result-value">${margin.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_width')}</div><div class="result-value">${(2*margin).toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${mode==='z'?'z*':'t*'}</div><div class="result-value">${crit.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">SE</div><div class="result-value">${se.toFixed(4)}</div></div>
+  </div>`;
+  drawCIChart(xbar,lo,hi,s,n,conf,alpha,mode);
+  drawCIWidthChart(xbar,s,conf,alpha,mode);
+}
+
+function drawCIChart(xbar,lo,hi,s,n,conf,alpha,mode){
+  const {ctx,W,H}=initCanvas('ciChart',260);
+  const pad={l:46,r:14,t:30,b:32};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const range=(hi-lo)*2.5;const xMin=xbar-range/2,xMax=xbar+range/2;
+  const toX=v=>pad.l+(v-xMin)/(xMax-xMin)*cW;
+  ctx.clearRect(0,0,W,H);
+  // Distribution
+  const se=s/Math.sqrt(n);const steps=300;const pts=[];let yMax=0;
+  for(let i=0;i<=steps;i++){const x=xMin+(xMax-xMin)*i/steps;const y=normPDF(x,xbar,se);pts.push({x,y});yMax=Math.max(yMax,y);}
+  yMax*=1.15;const toY=v=>pad.t+cH*(1-v/yMax);
+  // shade CI
+  ctx.beginPath();
+  const loC=Math.max(xMin,lo),hiC=Math.min(xMax,hi);
+  ctx.moveTo(toX(loC),toY(0));
+  pts.filter(p=>p.x>=loC&&p.x<=hiC).forEach(p=>ctx.lineTo(toX(p.x),toY(p.y)));
+  ctx.lineTo(toX(hiC),toY(0));ctx.closePath();ctx.fillStyle='rgba(10,10,10,0.07)';ctx.fill();
+  // Curve
+  ctx.beginPath();ctx.strokeStyle='rgba(10,10,10,0.85)';ctx.lineWidth=2;
+  pts.forEach((p,i)=>{if(i===0)ctx.moveTo(toX(p.x),toY(p.y));else ctx.lineTo(toX(p.x),toY(p.y));});ctx.stroke();
+  // CI bar
+  const barY=pad.t+cH+12;
+  ctx.strokeStyle='#0a0a0a';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(toX(lo),barY);ctx.lineTo(toX(hi),barY);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(toX(lo),barY-5);ctx.lineTo(toX(lo),barY+5);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(toX(hi),barY-5);ctx.lineTo(toX(hi),barY+5);ctx.stroke();
+  ctx.beginPath();ctx.fillStyle='#0a0a0a';ctx.arc(toX(xbar),barY,4,0,Math.PI*2);ctx.fill();
+  axisStyle(ctx);ctx.beginPath();ctx.moveTo(pad.l,pad.t+cH);ctx.lineTo(pad.l+cW,pad.t+cH);ctx.stroke();
+  monoFont(ctx);ctx.fillStyle='#bbb';
+  ctx.fillText(lo.toFixed(2),toX(lo)-14,pad.t-8);ctx.fillText(hi.toFixed(2),toX(hi)-14,pad.t-8);
+  monoFont(ctx,11);ctx.fillStyle='#555';ctx.fillText(conf+'% CI',pad.l+cW/2-16,pad.t-6);
+}
+
+function drawCIWidthChart(xbar,s,conf,alpha,mode){
+  const {ctx,W,H}=initCanvas('ciWidthChart',160);
+  const ns=[];const widths=[];
+  for(let i=1;i<=100;i++){const n=i*20;ns.push(n);const se=s/Math.sqrt(n);const crit=mode==='z'?invNorm(1-alpha/2):invT(1-alpha/2,n-1);widths.push(2*crit*se);}
+  const yMax=Math.max(...widths)*1.05;
+  const pad={l:46,r:14,t:12,b:32};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const toX=i=>pad.l+i/99*cW;const toY=v=>pad.t+cH*(1-v/yMax);
+  ctx.clearRect(0,0,W,H);
+  axisStyle(ctx);ctx.beginPath();ctx.moveTo(pad.l,pad.t+cH);ctx.lineTo(pad.l+cW,pad.t+cH);ctx.stroke();
+  ctx.beginPath();ctx.strokeStyle='rgba(10,10,10,0.85)';ctx.lineWidth=2;
+  widths.forEach((w,i)=>{if(i===0)ctx.moveTo(toX(i),toY(w));else ctx.lineTo(toX(i),toY(w));});ctx.stroke();
+  monoFont(ctx);ctx.fillStyle='#bbb';
+  [1,25,50,75,99].forEach(i=>ctx.fillText(ns[i],toX(i)-8,pad.t+cH+16));
+  monoFont(ctx,10);ctx.fillStyle='#bbb';ctx.fillText('n →',pad.l+cW-20,pad.t+cH+26);
+}
+
+// ============================================================
+//  EFFECT SIZE
+// ============================================================
+function calcEffect(){
+  const m1=+document.getElementById('es-m1').value, m2=+document.getElementById('es-m2').value;
+  const s1=+document.getElementById('es-s1').value||1, s2=+document.getElementById('es-s2').value||1;
+  const n1=+document.getElementById('es-n1').value||2, n2=+document.getElementById('es-n2').value||2;
+  const p1=+document.getElementById('es-p1').value, p2=+document.getElementById('es-p2').value;
+  const spooled=Math.sqrt(((n1-1)*s1*s1+(n2-1)*s2*s2)/(n1+n2-2));
+  const d=(m2-m1)/spooled;
+  const h=2*Math.asin(Math.sqrt(Math.max(0,Math.min(1,p2))))-2*Math.asin(Math.sqrt(Math.max(0,Math.min(1,p1))));
+  const overlap=normCDF(-Math.abs(d)/2+0)*2;// U3 approximation
+  const effLabel=Math.abs(d)<0.2?'negligible':Math.abs(d)<0.5?'small':Math.abs(d)<0.8?'medium':'large';
+  document.getElementById('es-results').innerHTML=`<div class="result-grid">
+    <div class="result-item"><div class="result-label">${t('r_cohens_d')}</div><div class="result-value sig">${d.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_cohens_h')}</div><div class="result-value">${h.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_effect_size')}</div><div class="result-value">${effLabel}</div></div>
+    <div class="result-item"><div class="result-label">σ pooled</div><div class="result-value">${spooled.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_overlap')}</div><div class="result-value">${(overlap*100).toFixed(1)}%</div></div>
+  </div>`;
+  drawEffectChart(m1,s1,m2,s2,d);
+}
+
+function drawEffectChart(m1,s1,m2,s2,d){
+  const {ctx,W,H}=initCanvas('effectChart',280);
+  const xMin=Math.min(m1,m2)-4*Math.max(s1,s2), xMax=Math.max(m1,m2)+4*Math.max(s1,s2);
+  const steps=300;const pts=[];let yMax=0;
+  for(let i=0;i<=steps;i++){const x=xMin+(xMax-xMin)*i/steps;const y1=normPDF(x,m1,s1),y2=normPDF(x,m2,s2);pts.push({x,y1,y2});yMax=Math.max(yMax,y1,y2);}
+  yMax*=1.12;
+  const pad={l:14,r:14,t:16,b:32};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const toX=v=>pad.l+(v-xMin)/(xMax-xMin)*cW;const toY=v=>pad.t+cH*(1-v/yMax);
+  ctx.clearRect(0,0,W,H);
+  // Overlap fill
+  ctx.beginPath();pts.forEach((p,i)=>{const y=Math.min(p.y1,p.y2);if(i===0)ctx.moveTo(toX(p.x),toY(0));else if(i===1){ctx.lineTo(toX(p.x),toY(0));ctx.lineTo(toX(p.x),toY(y));}else ctx.lineTo(toX(p.x),toY(y));});
+  ctx.lineTo(toX(pts[pts.length-1].x),toY(0));ctx.closePath();ctx.fillStyle='rgba(10,10,10,0.1)';ctx.fill();
+  // Curve 1
+  ctx.beginPath();ctx.strokeStyle='rgba(10,10,10,0.85)';ctx.lineWidth=2;
+  pts.forEach((p,i)=>{if(i===0)ctx.moveTo(toX(p.x),toY(p.y1));else ctx.lineTo(toX(p.x),toY(p.y1));});ctx.stroke();
+  // Curve 2
+  ctx.beginPath();ctx.setLineDash([6,4]);ctx.strokeStyle='rgba(10,10,10,0.38)';ctx.lineWidth=2;
+  pts.forEach((p,i)=>{if(i===0)ctx.moveTo(toX(p.x),toY(p.y2));else ctx.lineTo(toX(p.x),toY(p.y2));});ctx.stroke();ctx.setLineDash([]);
+  axisStyle(ctx);ctx.beginPath();ctx.moveTo(pad.l,pad.t+cH);ctx.lineTo(pad.l+cW,pad.t+cH);ctx.stroke();
+  monoFont(ctx,11);ctx.fillStyle='#555';
+  ctx.fillText('d='+d.toFixed(2),pad.l+cW/2-14,pad.t+14);
+}
+
+// ============================================================
+//  T-DISTRIBUTION vs Z
+// ============================================================
+function drawTDist(){
+  const df=Math.max(1,+document.getElementById('td-df').value);
+  const alpha=+document.getElementById('td-alpha').value||0.05;
+  const critT=invT(1-alpha/2,df);
+  const critZ=invNorm(1-alpha/2);
+  document.getElementById('td-results').innerHTML=`<div class="result-grid">
+    <div class="result-item"><div class="result-label">${t('r_crit_t')} (ν=${df})</div><div class="result-value sig">${critT.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_crit_z')}</div><div class="result-value">${critZ.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">ν (df)</div><div class="result-value">${df}</div></div>
+    <div class="result-item"><div class="result-label">Δ (t* − z*)</div><div class="result-value">${(critT-critZ).toFixed(4)}</div></div>
+  </div>`;
+  const {ctx,W,H}=initCanvas('tdistChart',300);
+  const xMin=-5,xMax=5;const steps=400;
+  const tPts=[];const nPts=[];let yMax=0;
+  for(let i=0;i<=steps;i++){const x=xMin+(xMax-xMin)*i/steps;const yt=tPDF(x,df);const yn=normPDF(x);tPts.push({x,y:yt});nPts.push({x,y:yn});yMax=Math.max(yMax,yt,yn);}
+  yMax*=1.12;
+  const pad={l:46,r:14,t:16,b:32};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const toX=v=>pad.l+(v-xMin)/(xMax-xMin)*cW;const toY=v=>pad.t+cH*(1-v/yMax);
+  ctx.clearRect(0,0,W,H);
+  // rejection region shading (t tails)
+  ['left','right'].forEach(side=>{
+    ctx.beginPath();
+    const threshold=side==='left'?-critT:critT;
+    const startX=side==='left'?xMin:threshold;
+    const endX=side==='left'?-critT:xMax;
+    const slice=tPts.filter(p=>p.x>=startX&&p.x<=endX);
+    if(!slice.length) return;
+    ctx.moveTo(toX(slice[0].x),toY(0));
+    slice.forEach(p=>ctx.lineTo(toX(p.x),toY(p.y)));
+    ctx.lineTo(toX(slice[slice.length-1].x),toY(0));
+    ctx.closePath();ctx.fillStyle='rgba(10,10,10,0.12)';ctx.fill();
+  });
+  axisStyle(ctx);ctx.beginPath();ctx.moveTo(pad.l,pad.t+cH);ctx.lineTo(pad.l+cW,pad.t+cH);ctx.stroke();
+  // t curve
+  ctx.beginPath();ctx.strokeStyle='rgba(10,10,10,0.88)';ctx.lineWidth=2;
+  tPts.forEach((p,i)=>{if(i===0)ctx.moveTo(toX(p.x),toY(p.y));else ctx.lineTo(toX(p.x),toY(p.y));});ctx.stroke();
+  // Normal curve dashed
+  ctx.beginPath();ctx.setLineDash([7,5]);ctx.strokeStyle='rgba(10,10,10,0.3)';ctx.lineWidth=1.5;
+  nPts.forEach((p,i)=>{if(i===0)ctx.moveTo(toX(p.x),toY(p.y));else ctx.lineTo(toX(p.x),toY(p.y));});ctx.stroke();ctx.setLineDash([]);
+  // Critical lines
+  [critT,-critT].forEach(v=>{
+    if(v>=xMin&&v<=xMax){
+      ctx.beginPath();ctx.strokeStyle='rgba(10,10,10,0.5)';ctx.lineWidth=1;ctx.setLineDash([3,4]);
+      ctx.moveTo(toX(v),pad.t);ctx.lineTo(toX(v),pad.t+cH);ctx.stroke();ctx.setLineDash([]);
+    }
+  });
+  monoFont(ctx);ctx.fillStyle='#bbb';
+  [-4,-2,0,2,4].forEach(v=>ctx.fillText(v,toX(v)-4,pad.t+cH+16));
+  monoFont(ctx,11);ctx.fillStyle='#555';ctx.fillText(`t(${df})`,pad.l+10,pad.t+20);
+  ctx.fillStyle='#aaa';ctx.fillText('N(0,1)',pad.l+48,pad.t+20);
+}
+
+// ============================================================
+//  VARIANCE REDUCTION
+// ============================================================
+function updateVR(){
+  const rho=+document.getElementById('vr-rho').value;
+  document.getElementById('vr-rho-val').textContent=rho.toFixed(2);
+  const sigma2=+document.getElementById('vr-sigma').value||1;
+  const adj=sigma2*(1-rho*rho);const reduction=rho*rho*100;
+  document.getElementById('vr-results').innerHTML=`<div class="result-grid">
+    <div class="result-item"><div class="result-label">${t('r_base_var')}</div><div class="result-value">${sigma2.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_adj_var')}</div><div class="result-value">${adj.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_reduction')}</div><div class="result-value sig">${reduction.toFixed(1)}%</div></div>
+    <div class="result-item"><div class="result-label">ρ²</div><div class="result-value">${(rho*rho).toFixed(4)}</div></div>
+  </div>`;
+  drawVRChart(sigma2,rho);
+}
+
+function drawVRChart(sigma2,currentRho){
+  const {ctx,W,H}=initCanvas('vrChart',240);
+  const pad={l:46,r:14,t:14,b:32};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const rhos=[];const adjs=[];
+  for(let i=0;i<=100;i++){const r=-1+2*i/100;rhos.push(r);adjs.push(sigma2*(1-r*r));}
+  const yMax=sigma2*1.05;
+  const toX=v=>pad.l+(v+1)/2*cW;const toY=v=>pad.t+cH*(1-v/yMax);
+  ctx.clearRect(0,0,W,H);
+  axisStyle(ctx);ctx.beginPath();ctx.moveTo(pad.l,pad.t+cH);ctx.lineTo(pad.l+cW,pad.t+cH);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,pad.t+cH);ctx.stroke();
+  // base line
+  ctx.beginPath();ctx.setLineDash([3,6]);ctx.strokeStyle='#d0d0d0';ctx.lineWidth=1;
+  ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l+cW,pad.t);ctx.stroke();ctx.setLineDash([]);
+  // fill
+  ctx.beginPath();
+  adjs.forEach((v,i)=>{const px=toX(rhos[i]),py=toY(v);if(i===0)ctx.moveTo(px,pad.t+cH);else if(i===1){ctx.lineTo(px,pad.t+cH);ctx.lineTo(px,py);}else ctx.lineTo(px,py);});
+  ctx.lineTo(toX(rhos[99]),pad.t+cH);ctx.closePath();ctx.fillStyle='rgba(10,10,10,0.05)';ctx.fill();
+  ctx.beginPath();ctx.strokeStyle='#0a0a0a';ctx.lineWidth=2.5;
+  adjs.forEach((v,i)=>{if(i===0)ctx.moveTo(toX(rhos[i]),toY(v));else ctx.lineTo(toX(rhos[i]),toY(v));});ctx.stroke();
+  // current rho dot
+  if(currentRho!==undefined){const adj=sigma2*(1-currentRho*currentRho);ctx.beginPath();ctx.fillStyle='#0a0a0a';ctx.arc(toX(currentRho),toY(adj),5,0,Math.PI*2);ctx.fill();}
+  monoFont(ctx);ctx.fillStyle='#bbb';
+  ['-1','0','1'].forEach((v,i)=>{const x=[pad.l,pad.l+cW/2,pad.l+cW][i];ctx.fillText(v,x-4,pad.t+cH+16);});
+  ctx.fillText('ρ',pad.l+cW/2,pad.t+cH+28);ctx.fillText('σ²adj',pad.l+4,pad.t+12);
+}
+
+// ============================================================
+//  MDE
+// ============================================================
+function calcMDE(){
+  const p=+document.getElementById('mde-p').value, N=+document.getElementById('mde-n').value;
+  const alpha=+document.getElementById('mde-a').value, pw=+document.getElementById('mde-pw').value;
+  const za2=invNorm(1-alpha/2),zb=invNorm(pw);
+  const n=N/2,se=Math.sqrt(2*p*(1-p)/n);
+  const mdeAbs=(za2+zb)*se,mdeRel=mdeAbs/p*100;
+  document.getElementById('mde-results').innerHTML=`<div class="result-grid">
+    <div class="result-item"><div class="result-label">${t('r_abs_mde')}</div><div class="result-value sig">${mdeAbs.toFixed(5)}</div></div>
+    <div class="result-item"><div class="result-label">${t('r_rel_mde')}</div><div class="result-value">${mdeRel.toFixed(2)}%</div></div>
+    <div class="result-item"><div class="result-label">${t('r_per_group')}</div><div class="result-value">${Math.round(n).toLocaleString()}</div></div>
+    <div class="result-item"><div class="result-label">z_α/2</div><div class="result-value">${za2.toFixed(3)}</div></div>
+    <div class="result-item"><div class="result-label">z_β</div><div class="result-value">${zb.toFixed(3)}</div></div>
+  </div>`;
+  drawMDEChart(p,alpha,pw);
+}
+
+function drawMDEChart(p,alpha,pw){
+  const {ctx,W,H}=initCanvas('mdeChart',240);
+  const za2=invNorm(1-alpha/2),zb=invNorm(pw);
+  const ns=[],mdes=[];
+  for(let i=1;i<=200;i++){const n=i*500;ns.push(n);mdes.push((za2+zb)*Math.sqrt(2*p*(1-p)/(n/2)));}
+  const xMax=100000,yMax=Math.max(...mdes)*1.05;
+  const pad={l:56,r:14,t:14,b:32};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const toX=n=>pad.l+(Math.min(n,xMax)/xMax)*cW;const toY=v=>pad.t+cH*(1-v/yMax);
+  ctx.clearRect(0,0,W,H);
+  axisStyle(ctx);ctx.beginPath();ctx.moveTo(pad.l,pad.t+cH);ctx.lineTo(pad.l+cW,pad.t+cH);ctx.stroke();
+  ctx.beginPath();ctx.strokeStyle='#0a0a0a';ctx.lineWidth=2;
+  ns.forEach((n,i)=>{if(n>xMax)return;const px=toX(n),py=toY(mdes[i]);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);});ctx.stroke();
+  monoFont(ctx);ctx.fillStyle='#bbb';
+  [0,25000,50000,75000,100000].forEach(v=>{ctx.fillText((v/1000)+'k',toX(v)-8,pad.t+cH+16);});
+  ctx.fillText('n →',pad.l+cW-20,pad.t+cH+26);ctx.fillText('MDE',pad.l+4,pad.t+12);
+}
+
+// ============================================================
+//  MULTI-ARMED BANDIT
+// ============================================================
+function runMAB(){
+  const pA=+document.getElementById('mab-pa').value, pB=+document.getElementById('mab-pb').value, pC=+document.getElementById('mab-pc').value;
+  const rounds=Math.min(10000,+document.getElementById('mab-rounds').value||1000);
+  const trueP=[pA,pB,pC];const best=Math.max(...trueP);
+  let alpha=[1,1,1],beta=[1,1,1];const allocs=[0,0,0];let cumRegret=0;const regretCurve=[];
+  for(let r=0;r<rounds;r++){
+    const thetas=alpha.map((a,i)=>sampleBeta(a,beta[i]));
+    const arm=thetas.indexOf(Math.max(...thetas));allocs[arm]++;
+    const reward=Math.random()<trueP[arm]?1:0;
+    cumRegret+=best-trueP[arm];
+    if(r%Math.max(1,Math.floor(rounds/200))===0) regretCurve.push(cumRegret);
+    alpha[arm]+=reward;beta[arm]+=(1-reward);
+  }
+  const winner=['A','B','C'][allocs.indexOf(Math.max(...allocs))];
+  const postMeans=alpha.map((a,i)=>a/(a+beta[i]));
+  let html=`<div class="result-grid">`;
+  ['A','B','C'].forEach((arm,i)=>{html+=`<div class="result-item"><div class="result-label">${arm} pulls</div><div class="result-value">${allocs[i]} (${(allocs[i]/rounds*100).toFixed(1)}%)</div></div>`;});
+  html+=`<div class="result-item"><div class="result-label">Regret</div><div class="result-value">${cumRegret.toFixed(1)}</div></div></div>`;
+  ['A','B','C'].forEach((arm,i)=>{const pct=(allocs[i]/rounds*100).toFixed(1);html+=`<div class="arm-bar"><div class="arm-bar-label"><span>${arm} (p=${trueP[i]})</span><span>${pct}%</span></div><div class="arm-bar-track"><div class="arm-bar-fill" style="width:${pct}%"></div></div></div>`;});
+  html+=`<div class="verdict yes">${t('verdict_winner')} ${winner}  ·  posterior=${postMeans[['A','B','C'].indexOf(winner)].toFixed(4)}</div>`;
+  document.getElementById('mab-results').innerHTML=html;
+  drawRegretChart(regretCurve);
+}
+function drawRegretChart(curve){
+  const {ctx,W,H}=initCanvas('mabChart',240);
+  if(!curve.length) return;
+  const yMax=Math.max(...curve)*1.05;
+  const pad={l:56,r:14,t:14,b:32};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const toX=i=>pad.l+i/(curve.length-1)*cW;const toY=v=>pad.t+cH*(1-v/yMax);
+  ctx.clearRect(0,0,W,H);
+  axisStyle(ctx);ctx.beginPath();ctx.moveTo(pad.l,pad.t+cH);ctx.lineTo(pad.l+cW,pad.t+cH);ctx.stroke();
+  ctx.beginPath();ctx.strokeStyle='#0a0a0a';ctx.lineWidth=2;
+  curve.forEach((v,i)=>{if(i===0)ctx.moveTo(toX(i),toY(v));else ctx.lineTo(toX(i),toY(v));});ctx.stroke();
+  monoFont(ctx);ctx.fillStyle='#bbb';ctx.fillText(yMax.toFixed(1),pad.l+4,pad.t+14);ctx.fillText('0',pad.l+4,pad.t+cH);
+  ctx.fillText('Rounds →',pad.l+cW-55,pad.t+cH+26);
+}
+
+// ============================================================
+//  LINEAR EQUATION
+// ============================================================
+function calcLinear(){
+  const a=+document.getElementById('lin-a').value||0;
+  const b=+document.getElementById('lin-b').value;
+  if(a===0){document.getElementById('lin-results').innerHTML=`<div class="verdict no">a = 0 — no unique solution</div>`;drawLinear(a,b);return;}
+  const x=-b/a;
+  document.getElementById('lin-results').innerHTML=`<div class="result-grid">
+    <div class="result-item"><div class="result-label">${t('lbl_root')}</div><div class="result-value sig">${x.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('lbl_slope_res')}</div><div class="result-value">${a}</div></div>
+    <div class="result-item"><div class="result-label">${t('lbl_y_int')}</div><div class="result-value">${b}</div></div>
+  </div>`;
+  drawLinear(a,b,x);
+}
+function drawLinear(a,b,root){
+  const {ctx,W,H}=initCanvas('linChart',210);
+  const xMin=-6,xMax=6;
+  const yVals=[];for(let x=xMin;x<=xMax;x+=0.1) yVals.push(a*x+b);
+  let yMin=Math.min(-1,...yVals),yMax=Math.max(1,...yVals);
+  const pad={l:38,r:12,t:12,b:28};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const toX=v=>pad.l+(v-xMin)/(xMax-xMin)*cW;const toY=v=>pad.t+cH*(1-(v-yMin)/(yMax-yMin));
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='#f0f0f0';ctx.lineWidth=1;
+  for(let x=xMin;x<=xMax;x++){ctx.beginPath();ctx.moveTo(toX(x),pad.t);ctx.lineTo(toX(x),pad.t+cH);ctx.stroke();}
+  ctx.strokeStyle='#d8d8d8';
+  ctx.beginPath();ctx.moveTo(toX(0),pad.t);ctx.lineTo(toX(0),pad.t+cH);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(pad.l,toY(0));ctx.lineTo(pad.l+cW,toY(0));ctx.stroke();
+  ctx.beginPath();ctx.strokeStyle='#0a0a0a';ctx.lineWidth=2;
+  ctx.moveTo(toX(xMin),toY(a*xMin+b));ctx.lineTo(toX(xMax),toY(a*xMax+b));ctx.stroke();
+  if(root!==undefined&&root>=xMin&&root<=xMax){ctx.beginPath();ctx.fillStyle='#0a0a0a';ctx.arc(toX(root),toY(0),5,0,Math.PI*2);ctx.fill();monoFont(ctx,11);ctx.fillStyle='#444';ctx.fillText(`x=${root.toFixed(2)}`,toX(root)+7,toY(0)-7);}
+  monoFont(ctx);ctx.fillStyle='#ccc';for(let x=xMin;x<=xMax;x+=2) ctx.fillText(x,toX(x)-4,pad.t+cH+16);
+}
+
+// ============================================================
+//  QUADRATIC EQUATION
+// ============================================================
+function calcQuad(){
+  const a=+document.getElementById('quad-a').value, b=+document.getElementById('quad-b').value, c=+document.getElementById('quad-c').value;
+  if(a===0){document.getElementById('quad-results').innerHTML=`<div class="verdict no">Not quadratic (a=0)</div>`;drawQuad(0,b,c,[]);return;}
+  const disc=b*b-4*a*c;let roots=[],rootStr='';
+  if(disc>0){roots=[(-b+Math.sqrt(disc))/(2*a),(-b-Math.sqrt(disc))/(2*a)];rootStr=`x₁=${roots[0].toFixed(4)}, x₂=${roots[1].toFixed(4)}`;}
+  else if(Math.abs(disc)<1e-10){roots=[-b/(2*a)];rootStr=`x=${roots[0].toFixed(4)} (double root)`;}
+  else{const re=(-b/(2*a)).toFixed(4),im=(Math.sqrt(-disc)/(2*a)).toFixed(4);rootStr=`x = ${re} ± ${im}i (complex)`;}
+  const vx=-b/(2*a),vy=c-b*b/(4*a);
+  document.getElementById('quad-results').innerHTML=`<div class="result-grid">
+    <div class="result-item"><div class="result-label">${t('lbl_disc')}</div><div class="result-value">${disc.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('lbl_vertex_x')}</div><div class="result-value">${vx.toFixed(4)}</div></div>
+    <div class="result-item"><div class="result-label">${t('lbl_vertex_y')}</div><div class="result-value">${vy.toFixed(4)}</div></div>
+  </div>
+  <div class="verdict ${disc>=0?'yes':'no'}" style="font-size:12px">${rootStr}</div>
+  <div class="info-block" style="margin-top:10px"><p>${disc>0?t('disc_2real'):Math.abs(disc)<1e-10?t('disc_double'):t('disc_complex')}</p></div>`;
+  drawQuad(a,b,c,roots);
+}
+function drawQuad(a,b,c,roots){
+  const {ctx,W,H}=initCanvas('quadChart',210);
+  const xMin=-6,xMax=6;
+  const yRaw=[];for(let x=xMin;x<=xMax;x+=0.1) yRaw.push(a*x*x+b*x+c);
+  let yMin=Math.min(-1,...yRaw),yMax=Math.max(1,...yRaw);
+  const r=yMax-yMin;yMin-=r*0.05;yMax+=r*0.05;
+  const pad={l:38,r:12,t:12,b:28};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const toX=v=>pad.l+(v-xMin)/(xMax-xMin)*cW;const toY=v=>pad.t+cH*(1-(v-yMin)/(yMax-yMin));
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='#f0f0f0';ctx.lineWidth=1;
+  for(let x=xMin;x<=xMax;x++){ctx.beginPath();ctx.moveTo(toX(x),pad.t);ctx.lineTo(toX(x),pad.t+cH);ctx.stroke();}
+  ctx.strokeStyle='#d8d8d8';
+  ctx.beginPath();ctx.moveTo(toX(0),pad.t);ctx.lineTo(toX(0),pad.t+cH);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(pad.l,toY(0));ctx.lineTo(pad.l+cW,toY(0));ctx.stroke();
+  ctx.beginPath();ctx.strokeStyle='#0a0a0a';ctx.lineWidth=2;let first=true;
+  for(let x=xMin;x<=xMax;x+=0.04){const y=a*x*x+b*x+c;if(y<yMin-1||y>yMax+1){first=true;continue;}if(first){ctx.moveTo(toX(x),toY(y));first=false;}else ctx.lineTo(toX(x),toY(y));}ctx.stroke();
+  roots.forEach(r=>{if(r>=xMin&&r<=xMax){ctx.beginPath();ctx.fillStyle='#0a0a0a';ctx.arc(toX(r),toY(0),5,0,Math.PI*2);ctx.fill();}});
+  monoFont(ctx);ctx.fillStyle='#ccc';for(let x=xMin;x<=xMax;x+=2) ctx.fillText(x,toX(x)-4,pad.t+cH+16);
+}
+
+// ============================================================
+//  REGRESSION LAB
+// ============================================================
+let regData=[],regScenario='linear';
+function setScenario(s,el){regScenario=s;document.querySelectorAll('.scenario-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function generateData(){
+  const n=Math.min(300,Math.max(10,+document.getElementById('reg-n').value));
+  const noise=+document.getElementById('reg-noise').value;
+  const b0=+document.getElementById('reg-b0').value, b1=+document.getElementById('reg-b1').value, b2=+document.getElementById('reg-b2').value;
+  regData=[];
+  for(let i=0;i<n;i++){const x=-3+6*Math.random();let y;
+    if(regScenario==='linear') y=b0+b1*x+randn()*noise;
+    else if(regScenario==='quadratic') y=b0+b1*x+b2*x*x+randn()*noise;
+    else y=b0+b1*Math.sin(x*1.5)+randn()*noise;
+    regData.push({x,y});}
+  fitAndDraw();
+}
+function clearData(){regData=[];document.getElementById('reg-metrics').innerHTML=`<p style="color:var(--subtle);font-family:var(--mono);font-size:13px">${t('reg_empty')}</p>`;drawReg();}
+function olsLinear(pts){const n=pts.length;if(n<2)return{a:0,b:0};const xm=pts.reduce((s,p)=>s+p.x,0)/n,ym=pts.reduce((s,p)=>s+p.y,0)/n;let num=0,den=0;pts.forEach(p=>{num+=(p.x-xm)*(p.y-ym);den+=(p.x-xm)**2;});const bv=den?num/den:0;return{a:ym-bv*xm,b:bv};}
+function olsPoly2(pts){const n=pts.length;if(n<3)return{c:[0,0,0]};let s0=n,s1=0,s2=0,s3=0,s4=0,t0=0,t1=0,t2=0;pts.forEach(p=>{const x=p.x,y=p.y,x2=x*x;s1+=x;s2+=x2;s3+=x2*x;s4+=x2*x2;t0+=y;t1+=x*y;t2+=x2*y;});const A=[[s0,s1,s2],[s1,s2,s3],[s2,s3,s4]],bv=[t0,t1,t2];for(let i=0;i<3;i++){let mx=i;for(let j=i+1;j<3;j++)if(Math.abs(A[j][i])>Math.abs(A[mx][i]))mx=j;[A[i],A[mx]]=[A[mx],A[i]];[bv[i],bv[mx]]=[bv[mx],bv[i]];for(let j=i+1;j<3;j++){const f=A[j][i]/A[i][i];for(let k=i;k<3;k++)A[j][k]-=f*A[i][k];bv[j]-=f*bv[i];}}const cv=[0,0,0];for(let i=2;i>=0;i--){cv[i]=bv[i];for(let j=i+1;j<3;j++)cv[i]-=A[i][j]*cv[j];cv[i]/=A[i][i];}return{c:cv};}
+function regMetrics(pts,pred){const n=pts.length;if(!n)return{};const ym=pts.reduce((s,p)=>s+p.y,0)/n;let ss_res=0,ss_tot=0,mae=0;pts.forEach(p=>{const r=p.y-pred(p.x);ss_res+=r*r;ss_tot+=(p.y-ym)**2;mae+=Math.abs(r);});return{r2:ss_tot?1-ss_res/ss_tot:0,mse:ss_res/n,rmse:Math.sqrt(ss_res/n),mae:mae/n,resVar:ss_res/(n-1)||0};}
+function fitAndDraw(){
+  if(!regData.length){drawReg();return;}
+  const lin=olsLinear(regData);const {c}=olsPoly2(regData);
+  const lm=regMetrics(regData,x=>lin.a+lin.b*x);const pm=regMetrics(regData,x=>c[0]+c[1]*x+c[2]*x*x);
+  document.getElementById('reg-metrics').innerHTML=`
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle);margin-bottom:14px">${t('lbl_lin_fit')}</div>
+    <div class="result-grid">
+      <div class="result-item"><div class="result-label">R²</div><div class="result-value ${lm.r2>0.7?'sig':''}">${lm.r2.toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">MSE</div><div class="result-value">${lm.mse.toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">RMSE</div><div class="result-value">${lm.rmse.toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">MAE</div><div class="result-value">${lm.mae.toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">Res.Var</div><div class="result-value">${lm.resVar.toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">β₀</div><div class="result-value">${lin.a.toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">β₁</div><div class="result-value">${lin.b.toFixed(4)}</div></div>
+    </div>
+    <div style="height:1px;background:var(--line);margin:20px 0"></div>
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle);margin-bottom:14px">${t('lbl_quad_fit')}</div>
+    <div class="result-grid">
+      <div class="result-item"><div class="result-label">R²</div><div class="result-value ${pm.r2>0.7?'sig':''}">${pm.r2.toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">RMSE</div><div class="result-value">${pm.rmse.toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">MAE</div><div class="result-value">${pm.mae.toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">Res.Var</div><div class="result-value">${pm.resVar.toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">β₀</div><div class="result-value">${c[0].toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">β₁</div><div class="result-value">${c[1].toFixed(4)}</div></div>
+      <div class="result-item"><div class="result-label">β₂</div><div class="result-value">${c[2].toFixed(4)}</div></div>
+    </div>`;
+  drawReg(lin,c);
+}
+function drawReg(lin,polyC){
+  const {ctx,W,H}=initCanvas('regressionCanvas',420);
+  const pad={l:46,r:14,t:14,b:36};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  let xMin=-3.5,xMax=3.5,yMin=-5,yMax=5;
+  if(regData.length){xMin=Math.min(...regData.map(p=>p.x))-0.3;xMax=Math.max(...regData.map(p=>p.x))+0.3;yMin=Math.min(...regData.map(p=>p.y))-0.5;yMax=Math.max(...regData.map(p=>p.y))+0.5;}
+  const toX=v=>pad.l+(v-xMin)/(xMax-xMin)*cW;const toY=v=>pad.t+cH*(1-(v-yMin)/(yMax-yMin));
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='#f4f4f4';ctx.lineWidth=1;
+  for(let x=Math.ceil(xMin);x<=xMax;x++){ctx.beginPath();ctx.moveTo(toX(x),pad.t);ctx.lineTo(toX(x),pad.t+cH);ctx.stroke();}
+  for(let y=Math.ceil(yMin);y<=yMax;y++){ctx.beginPath();ctx.moveTo(pad.l,toY(y));ctx.lineTo(pad.l+cW,toY(y));ctx.stroke();}
+  ctx.strokeStyle='#d0d0d0';ctx.lineWidth=1;
+  if(0>=xMin&&0<=xMax){ctx.beginPath();ctx.moveTo(toX(0),pad.t);ctx.lineTo(toX(0),pad.t+cH);ctx.stroke();}
+  if(0>=yMin&&0<=yMax){ctx.beginPath();ctx.moveTo(pad.l,toY(0));ctx.lineTo(pad.l+cW,toY(0));ctx.stroke();}
+  monoFont(ctx);ctx.fillStyle='#ccc';
+  for(let x=Math.ceil(xMin);x<=xMax;x++) ctx.fillText(x,toX(x)-4,pad.t+cH+16);
+  regData.forEach(p=>{ctx.beginPath();ctx.fillStyle='rgba(10,10,10,0.52)';ctx.arc(toX(p.x),toY(p.y),3.5,0,Math.PI*2);ctx.fill();});
+  if(lin){ctx.beginPath();ctx.strokeStyle='#0a0a0a';ctx.lineWidth=2;ctx.setLineDash([]);ctx.moveTo(toX(xMin),toY(lin.a+lin.b*xMin));ctx.lineTo(toX(xMax),toY(lin.a+lin.b*xMax));ctx.stroke();}
+  if(polyC){const[c0,c1,c2]=polyC;ctx.beginPath();ctx.strokeStyle='rgba(10,10,10,0.32)';ctx.lineWidth=2;ctx.setLineDash([7,5]);let first=true;for(let x=xMin;x<=xMax;x+=0.04){const y=c0+c1*x+c2*x*x;if(y<yMin-2||y>yMax+2){first=true;continue;}if(first){ctx.moveTo(toX(x),toY(y));first=false;}else ctx.lineTo(toX(x),toY(y));}ctx.stroke();ctx.setLineDash([]);}
+}
+document.getElementById('regressionCanvas').addEventListener('click',function(e){
+  if(!regData.length) return;
+  const rect=this.getBoundingClientRect();
+  const W=this.parentElement.clientWidth-36, H=420;
+  const pad={l:46,r:14,t:14,b:36};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const xMin=Math.min(...regData.map(p=>p.x))-0.3, xMax=Math.max(...regData.map(p=>p.x))+0.3;
+  const yMin=Math.min(...regData.map(p=>p.y))-0.5, yMax=Math.max(...regData.map(p=>p.y))+0.5;
+  const cx=(e.clientX-rect.left)/rect.width*W, cy=(e.clientY-rect.top)/rect.height*H;
+  const x=xMin+(cx-pad.l)/cW*(xMax-xMin);
+  const y=yMax-(cy-pad.t)/cH*(yMax-yMin);
+  regData.push({x,y});fitAndDraw();
+});
+
+// ============================================================
+//  INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded',()=>{
+  calcAB();calcBayes();runCLT();
+  calcZScore();calcCI();calcEffect();drawTDist();
+  updateVR();calcMDE();
+  calcLinear();calcQuad();generateData();
+});
+window.addEventListener('resize',()=>{
+  calcAB();calcBayes();calcZScore();calcCI();calcEffect();drawTDist();
+  updateVR();calcMDE();calcLinear();calcQuad();
+  if(regData.length) fitAndDraw(); else drawReg();
+});
+</script>
+</body>
+</html>
