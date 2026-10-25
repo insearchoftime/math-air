@@ -1,0 +1,698 @@
+[
+  {
+    "id": "01",
+    "person": "mira",
+    "date": "2026-06-03",
+    "text": {
+      "ru": [
+        "Пойдём на выставку в субботу? Там показывают новые фотографии.",
+        "Хочу посмотреть, как там работают со светом."
+      ],
+      "en": [
+        "Shall we go to the exhibition on Saturday? There are new photographs.",
+        "I want to see how they work with light."
+      ]
+    },
+    "vectors": [
+      [
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "02",
+    "person": "lena",
+    "date": "2026-06-07",
+    "text": {
+      "ru": [
+        "Хочу посмотреть современную живопись. Нашла маленькую галерею.",
+        "Да, давай."
+      ],
+      "en": [
+        "I want to see contemporary painting. I found a small gallery.",
+        "Yes, let’s do it."
+      ]
+    },
+    "vectors": [
+      [
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "03",
+    "person": "anton",
+    "date": "2026-06-10",
+    "text": {
+      "ru": [
+        "Слушаю этот джазовый альбом третий раз. Особенно нравится бас.",
+        "Пришли запись, послушаю вечером в наушниках."
+      ],
+      "en": [
+        "I am listening to this jazz album for the third time. I love the bass.",
+        "Send me the recording. I will listen with headphones tonight."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "04",
+    "person": "kirill",
+    "date": "2026-06-12",
+    "text": {
+      "ru": [
+        "В отчёте снова не сходятся числа. Давай проверим расчёт.",
+        "Сравню исходные данные и пришлю исправленную таблицу."
+      ],
+      "en": [
+        "The numbers in the report do not match again. Let’s check the calculation.",
+        "I will compare the source data and send the corrected table."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "05",
+    "person": "lena",
+    "date": "2026-06-15",
+    "text": {
+      "ru": [
+        "Хочется уехать к морю хотя бы на неделю.",
+        "Посмотрю билеты и жильё. В июле у меня отпуск."
+      ],
+      "en": [
+        "I want to go to the sea for at least a week.",
+        "I will look at tickets and accommodation. I have a holiday in July."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "06",
+    "person": "mira",
+    "date": "2026-06-19",
+    "text": {
+      "ru": [
+        "Нужен эскиз обложки для нового проекта. Успеем до пятницы?",
+        "Сделаю два варианта композиции и отправлю заказчику."
+      ],
+      "en": [
+        "We need a cover sketch for the new project. Can we finish by Friday?",
+        "I will make two compositions and send them to the client."
+      ]
+    },
+    "vectors": [
+      [
+        0.65,
+        0,
+        0.75,
+        0
+      ],
+      [
+        0.7,
+        0,
+        0.65,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "07",
+    "person": "anton",
+    "date": "2026-06-22",
+    "text": {
+      "ru": [
+        "Вечером играют квартетом в маленьком зале. Пойдём на концерт?",
+        "Я с вами. Возьму билеты у входа."
+      ],
+      "en": [
+        "A quartet is playing in a small hall tonight. Shall we go to the concert?",
+        "I am coming. I will get tickets at the door."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0.8,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "08",
+    "person": "kirill",
+    "date": "2026-06-27",
+    "text": {
+      "ru": [
+        "На выходных хочу пройти маршрут вдоль озера.",
+        "Скинь точку старта, проверю дорогу и возьму палатку."
+      ],
+      "en": [
+        "This weekend I want to hike the trail along the lake.",
+        "Send the starting point. I will check the route and bring a tent."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "09",
+    "person": "mira",
+    "date": "2026-07-02",
+    "text": {
+      "ru": [
+        "Сняла серию портретов. Не могу выбрать между цветом и чёрно-белым.",
+        "В чёрно-белом лучше видны лица. Покажи ещё пару кадров."
+      ],
+      "en": [
+        "I took a series of portraits. I cannot choose between colour and black and white.",
+        "The faces stand out in black and white. Show me a few more frames."
+      ]
+    },
+    "vectors": [
+      [
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "10",
+    "person": "anton",
+    "date": "2026-07-05",
+    "text": {
+      "ru": [
+        "Запишем короткую мелодию для заставки? Клиент ждёт демо.",
+        "Да. Набросаю партию на синтезаторе и пришлю файл к обеду."
+      ],
+      "en": [
+        "Shall we record a short melody for the intro? The client is waiting for a demo.",
+        "Yes. I will sketch a synthesizer part and send the file by lunch."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        0.85,
+        0.55,
+        0
+      ],
+      [
+        0,
+        0.9,
+        0.45,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "11",
+    "person": "lena",
+    "date": "2026-07-09",
+    "text": {
+      "ru": [
+        "Мечтаю об отпуске без расписания. Просто гулять по незнакомому городу.",
+        "Нашла квартиру рядом с вокзалом. Можно добраться поездом."
+      ],
+      "en": [
+        "I dream of a holiday without a schedule. Just walking around an unfamiliar city.",
+        "I found an apartment near the station. We can get there by train."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "12",
+    "person": "kirill",
+    "date": "2026-07-11",
+    "text": {
+      "ru": [
+        "На встрече договорились сократить первую версию приложения.",
+        "Тогда перенесу поиск в следующий релиз. Завтра обновлю задачи."
+      ],
+      "en": [
+        "At the meeting we agreed to reduce the first version of the application.",
+        "Then I will move search to the next release. I will update the tasks tomorrow."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "13",
+    "person": "mira",
+    "date": "2026-07-15",
+    "text": {
+      "ru": [
+        "В поездке хочу зарисовать старые дома и узкие улицы.",
+        "Возьми маленький блокнот. В том городе много красивых фасадов."
+      ],
+      "en": [
+        "On the trip I want to sketch old houses and narrow streets.",
+        "Take a small sketchbook. That city has many beautiful facades."
+      ]
+    },
+    "vectors": [
+      [
+        0.8,
+        0,
+        0,
+        0.7
+      ],
+      [
+        0.8,
+        0,
+        0,
+        0.6
+      ]
+    ]
+  },
+  {
+    "id": "14",
+    "person": "anton",
+    "date": "2026-07-18",
+    "text": {
+      "ru": [
+        "Хочу разобрать на слух эту песню и сыграть её на пианино.",
+        "Начни с басовой линии, потом подберём аккорды."
+      ],
+      "en": [
+        "I want to learn this song by ear and play it on the piano.",
+        "Start with the bass line, then we will work out the chords."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "15",
+    "person": "lena",
+    "date": "2026-07-23",
+    "text": {
+      "ru": [
+        "В музее увидела керамику с простыми геометрическими узорами.",
+        "Пришли фото. Хочу попробовать похожую роспись на чашке."
+      ],
+      "en": [
+        "At the museum I saw pottery with simple geometric patterns.",
+        "Send a photo. I want to try a similar pattern on a cup."
+      ]
+    },
+    "vectors": [
+      [
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "16",
+    "person": "kirill",
+    "date": "2026-07-28",
+    "text": {
+      "ru": [
+        "Предлагают выступить с докладом в другом городе. Поедем вместе?",
+        "Да. Сначала согласую рабочую поездку, потом забронируем поезд."
+      ],
+      "en": [
+        "We have been invited to give a talk in another city. Shall we go together?",
+        "Yes. I will get the work trip approved, then we can book the train."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        0,
+        0.75,
+        0.7
+      ],
+      [
+        0,
+        0,
+        0.75,
+        0.7
+      ]
+    ]
+  },
+  {
+    "id": "17",
+    "person": "mira",
+    "date": "2026-08-03",
+    "text": {
+      "ru": [
+        "Показываю заказчику макет завтра. Нужен свежий взгляд на структуру.",
+        "Прочитаю вечером. Проверю порядок разделов и подписи."
+      ],
+      "en": [
+        "I am showing the layout to the client tomorrow. I need a fresh look at the structure.",
+        "I will read it tonight. I will check the order of sections and captions."
+      ]
+    },
+    "vectors": [
+      [
+        0.35,
+        0,
+        0.9,
+        0
+      ],
+      [
+        0.2,
+        0,
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "18",
+    "person": "anton",
+    "date": "2026-08-07",
+    "text": {
+      "ru": [
+        "На фестивале можно пожить в палатке и три дня слушать группы.",
+        "Отлично. Посмотрю программу и маршрут до площадки."
+      ],
+      "en": [
+        "At the festival we can camp and listen to bands for three days.",
+        "Great. I will check the programme and the route to the venue."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        0.8,
+        0,
+        0.75
+      ],
+      [
+        0,
+        0.65,
+        0,
+        0.6
+      ]
+    ]
+  },
+  {
+    "id": "19",
+    "person": "lena",
+    "date": "2026-08-10",
+    "text": {
+      "ru": [
+        "Билеты уже куплены, осталось решить, где остановимся.",
+        "Я нашла тихий дом в десяти минутах от пляжа."
+      ],
+      "en": [
+        "The tickets are booked. We still need to decide where to stay.",
+        "I found a quiet house ten minutes from the beach."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "20",
+    "person": "kirill",
+    "date": "2026-08-14",
+    "text": {
+      "ru": [
+        "После обновления поиск стал медленнее. Посмотрим логи?",
+        "Нашёл лишний запрос к базе. Сегодня исправлю."
+      ],
+      "en": [
+        "Search became slower after the update. Shall we look at the logs?",
+        "I found an extra database query. I will fix it today."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "21",
+    "person": "mira",
+    "date": "2026-08-18",
+    "text": {
+      "ru": [
+        "Хочу сделать коллаж из цветных вырезок и старых писем.",
+        "Попробуй оставить больше пустого места между фрагментами."
+      ],
+      "en": [
+        "I want to make a collage from coloured cutouts and old letters.",
+        "Try leaving more empty space between the pieces."
+      ]
+    },
+    "vectors": [
+      [
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "22",
+    "person": "anton",
+    "date": "2026-08-21",
+    "text": {
+      "ru": [
+        "Мне совсем не понравился этот альбом. Всё звучит одинаково.",
+        "А мне понравился. Особенно последняя композиция."
+      ],
+      "en": [
+        "I really disliked this album. Everything sounds the same.",
+        "I liked it. Especially the last track."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "23",
+    "person": "lena",
+    "date": "2026-08-25",
+    "text": {
+      "ru": [
+        "Поможешь собрать презентацию? Картинки есть, текста пока слишком много.",
+        "Сначала выберем главную мысль каждого слайда, потом уберём лишнее."
+      ],
+      "en": [
+        "Will you help me put the presentation together? I have the images, but too much text.",
+        "Let’s choose the main point of each slide first, then remove the extra text."
+      ]
+    },
+    "vectors": [
+      [
+        0.5,
+        0,
+        0.8,
+        0
+      ],
+      [
+        0.3,
+        0,
+        0.9,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "24",
+    "person": "kirill",
+    "date": "2026-08-29",
+    "text": {
+      "ru": [
+        "Возьмём гитару в поход? Вечером у костра можно поиграть.",
+        "Возьмём. Я помню несколько песен, а дорога будет долгой."
+      ],
+      "en": [
+        "Shall we take a guitar on the hike? We could play by the campfire tonight.",
+        "Let’s take it. I remember a few songs, and it is a long journey."
+      ]
+    },
+    "vectors": [
+      [
+        0,
+        0.7,
+        0,
+        0.8
+      ],
+      [
+        0,
+        0.6,
+        0,
+        0.7
+      ]
+    ]
+  }
+]

@@ -4,6 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Math Air — Visual Mathematics</title>
+<meta name="description" content="Explore vectors, text representations and conversation maps in three interactive labs. Fictional examples, visible calculations, no uploads."/>
+<link rel="stylesheet" href="learning-labs.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
@@ -183,10 +185,10 @@ footer p{font-family:var(--mono);font-size:12px;color:var(--subtle);letter-spaci
     <div class="topbar-inner">
       <a class="brand" href="#">Math Air</a>
       <nav class="nav">
+        <a href="#vectors" data-i18n="nav_vectors">Vectors</a>
+        <a href="#text-space" data-i18n="nav_text">Text</a>
+        <a href="#conversations" data-i18n="nav_chats">Conversations</a>
         <a href="#stats" data-i18n="nav_stats">Statistics</a>
-        <a href="#zci"   data-i18n="nav_zci">Z / CI</a>
-        <a href="#advanced" data-i18n="nav_adv">Advanced</a>
-        <a href="#equations" data-i18n="nav_eq">Equations</a>
         <a href="#regression" data-i18n="nav_reg">Regression</a>
       </nav>
       <div class="lang-sw">
@@ -204,10 +206,10 @@ footer p{font-family:var(--mono);font-size:12px;color:var(--subtle);letter-spaci
       <div>
         <div class="hero-eyebrow"><span>⬡</span> <span data-i18n="hero_eyebrow">Visual Mathematics</span></div>
         <h1 class="hero-title" data-i18n="hero_title_html">Mathematics<br/>made <em>visible</em></h1>
-        <p class="hero-sub" data-i18n="hero_sub">Interactive calculators, live distributions, regression labs and Bayesian posteriors — all in pure mathematical clarity.</p>
+        <p class="hero-sub" data-i18n="hero_sub">Turn arrows, compare texts and map conversations. Explore the calculations behind similarity, learning and statistical inference.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#stats" data-i18n="hero_cta1">Explore Statistics</a>
-          <a class="btn btn-outline" href="#regression" data-i18n="hero_cta2">Regression Lab</a>
+          <a class="btn btn-primary" href="#vectors" data-i18n="hero_cta1">Start with Vectors</a>
+          <a class="btn btn-outline" href="#conversations" data-i18n="hero_cta2">Conversation Map</a>
         </div>
       </div>
       <div class="hero-visual"><canvas id="heroCanvas"></canvas></div>
@@ -215,10 +217,13 @@ footer p{font-family:var(--mono);font-size:12px;color:var(--subtle);letter-spaci
   </div>
 </section>
 
+<div id="learning-labs"></div>
+<noscript><div class="wrap"><p class="lab-note">The interactive labs need JavaScript. / Для интерактивных лабораторий нужен JavaScript.</p></div></noscript>
+
 <!-- ======================================================  STATS  -->
 <section id="stats">
   <div class="wrap">
-    <div class="section-label">§ 01</div>
+    <div class="section-label">§ 04</div>
     <h2 class="section-title" data-i18n="s1_title">Inference &amp; Testing</h2>
     <p class="section-desc" data-i18n="s1_desc">Central Limit Theorem, hypothesis testing, p-values, confidence intervals and Bayesian posteriors — the backbone of statistical reasoning.</p>
 
@@ -394,7 +399,7 @@ footer p{font-family:var(--mono);font-size:12px;color:var(--subtle);letter-spaci
 <!-- ======================================================  Z / CI  -->
 <section id="zci">
   <div class="wrap">
-    <div class="section-label">§ 02</div>
+    <div class="section-label">§ 05</div>
     <h2 class="section-title" data-i18n="s2_title">Z-Scores, CI &amp; Effect Size</h2>
     <p class="section-desc" data-i18n="s2_desc">Standardisation, confidence intervals, and effect size measures — the tools that connect raw data to actionable interpretation.</p>
 
@@ -601,7 +606,7 @@ footer p{font-family:var(--mono);font-size:12px;color:var(--subtle);letter-spaci
 <!-- ======================================================  ADVANCED  -->
 <section id="advanced">
   <div class="wrap">
-    <div class="section-label">§ 03</div>
+    <div class="section-label">§ 06</div>
     <h2 class="section-title" data-i18n="s3_title">Advanced Methods</h2>
     <p class="section-desc" data-i18n="s3_desc">Variance reduction, minimal detectable effect, and multi-armed bandit simulation — tools for designing rigorous experiments.</p>
 
@@ -708,7 +713,7 @@ footer p{font-family:var(--mono);font-size:12px;color:var(--subtle);letter-spaci
 <!-- ======================================================  EQUATIONS  -->
 <section id="equations">
   <div class="wrap">
-    <div class="section-label">§ 04</div>
+    <div class="section-label">§ 07</div>
     <h2 class="section-title" data-i18n="s4_title">Equations</h2>
     <p class="section-desc" data-i18n="s4_desc">Linear and nonlinear equations with geometric intuition. Roots, slopes, discriminants — visualised on a Cartesian plane.</p>
     <div class="two-col">
@@ -762,7 +767,7 @@ footer p{font-family:var(--mono);font-size:12px;color:var(--subtle);letter-spaci
 <!-- ======================================================  REGRESSION  -->
 <section id="regression">
   <div class="wrap">
-    <div class="section-label">§ 05</div>
+    <div class="section-label">§ 08</div>
     <h2 class="section-title" data-i18n="s5_title">Regression Lab</h2>
     <p class="section-desc" data-i18n="s5_desc">Generate synthetic data, fit models, inspect residuals. Click the canvas to add custom points.</p>
     <div class="two-col" style="align-items:start">
@@ -849,12 +854,13 @@ footer p{font-family:var(--mono);font-size:12px;color:var(--subtle);letter-spaci
 // ============================================================
 const LANG = {
   en: {
+    nav_vectors:'Vectors', nav_text:'Text', nav_chats:'Conversations',
     nav_stats:'Statistics', nav_zci:'Z / CI', nav_adv:'Advanced',
     nav_eq:'Equations', nav_reg:'Regression',
     hero_eyebrow:'Visual Mathematics',
     hero_title_html:'Mathematics<br/>made <em>visible</em>',
-    hero_sub:'Interactive calculators, live distributions, regression labs and Bayesian posteriors — all in pure mathematical clarity.',
-    hero_cta1:'Explore Statistics', hero_cta2:'Regression Lab',
+    hero_sub:'Turn arrows, compare texts and map conversations. Explore the calculations behind similarity, learning and statistical inference.',
+    hero_cta1:'Start with Vectors', hero_cta2:'Conversation Map',
     s1_title:'Inference &amp; Testing',
     s1_desc:'Central Limit Theorem, hypothesis testing, p-values, confidence intervals and Bayesian posteriors — the backbone of statistical reasoning.',
     tab_ab:'A/B Test', tab_bayes:'Bayesian', tab_clt:'CLT',
@@ -961,12 +967,13 @@ const LANG = {
     lbl_lin_fit:'Linear fit', lbl_quad_fit:'Quadratic fit',
   },
   ru: {
+    nav_vectors:'Векторы', nav_text:'Текст', nav_chats:'Разговоры',
     nav_stats:'Статистика', nav_zci:'Z / ДИ', nav_adv:'Продвинутые',
     nav_eq:'Уравнения', nav_reg:'Регрессия',
     hero_eyebrow:'Визуальная математика',
     hero_title_html:'Математика,<br/>которую <em>видно</em>',
-    hero_sub:'Интерактивные калькуляторы, живые распределения, лаборатория регрессии и байесовские апостериорные — в чистой математической ясности.',
-    hero_cta1:'Статистика', hero_cta2:'Лаборатория регрессии',
+    hero_sub:'Поворачивайте векторы, сравнивайте тексты и исследуйте разговоры. Разбирайтесь, как работают похожесть, обучение и статистический вывод.',
+    hero_cta1:'Начать с векторов', hero_cta2:'Карта разговоров',
     s1_title:'Вывод и тестирование',
     s1_desc:'Центральная предельная теорема, проверка гипотез, p-value, доверительные интервалы и байесовский взгляд — основа статистического мышления.',
     tab_ab:'A/B тест', tab_bayes:'Байесовский', tab_clt:'ЦПТ',
@@ -1087,6 +1094,7 @@ function setLang(lang){
     const val = t(key);
     if(val) el.innerHTML = val;
   });
+  if (window.MathAirLabs) window.MathAirLabs.render(lang);
   // Re-run all calcs to refresh result labels
   calcAB(); calcBayes(); calcZScore(); calcCI(); calcEffect(); drawTDist();
   updateVR(); calcMDE(); calcLinear(); calcQuad();
@@ -1854,5 +1862,7 @@ window.addEventListener('resize',()=>{
   if(regData.length) fitAndDraw(); else drawReg();
 });
 </script>
+<script src="embeddings-data.js"></script>
+<script src="learning-labs.js"></script>
 </body>
 </html>
